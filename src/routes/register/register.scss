@@ -1,0 +1,24 @@
+.sign-up {
+  .title {
+    margin-bottom: 2svh;
+  }
+
+  width: min(85%, 500px);
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 1.2svh;
+  padding: 28px;
+  margin-top: 8svh;
+
+  .email-wrapper {
+    display: flex;
+    width: 100%;
+    gap: 1svh;
+
+    .email-suffix {
+      height: 80%;
+    }
+  }
+}

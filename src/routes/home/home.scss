@@ -1,0 +1,51 @@
+.logo {
+  $opacity: 70%;
+  width: 100%;
+  height: 70svh;
+  padding: 10px;
+
+  svg {
+    stroke-dasharray: 100%;
+    stroke-width: 2;
+    width: 100%;
+    stroke: var(--mui-palette-secondary-main);
+    fill: var(--mui-palette-secondary-main);
+
+    height: 100%;
+    filter: drop-shadow(0 0 3px var(--mui-palette-secondary-main));
+
+    text {
+      letter-spacing: 5px;
+      font-weight: bold;
+      font-size: min(max(15svw, 50px), 200px);
+      text-anchor: middle;
+    }
+  }
+
+  .static {
+    stroke-dashoffset: 0;
+    fill-opacity: $opacity;
+    filter: drop-shadow(0 0 15px var(--mui-palette-secondary-main));
+    scale: 1.05
+  }
+
+  .animated {
+    stroke-dashoffset: 100%;
+    animation: stroke 6s forwards, fill 2.5s 2.8s forwards;
+    fill-opacity: 0;
+
+    @keyframes stroke {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes fill {
+      to {
+        fill-opacity: $opacity;
+        filter: drop-shadow(0 0 15px var(--mui-palette-secondary-main));
+        scale: 1.05
+      }
+    }
+  }
+}

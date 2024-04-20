@@ -1,79 +1,121 @@
-import {Navigation} from './Navigation';
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import {Root} from './routes/Root';
-import {ThemeOptions} from '@mui/material/styles/createTheme';
-import {grey, red} from '@mui/material/colors';
-import React, {useState} from 'react';
-import {createTheme, CssBaseline, PaletteMode, StyledEngineProvider, Theme, ThemeProvider} from '@mui/material';
-import {bronze_olive, caper, clover, granny_smith_apple, palm_leaf, texas} from './colors';
+import {Header} from './header/Header';
+import {BrowserRouter as Router} from 'react-router-dom';
+import React, {createContext, PropsWithChildren, useContext, useEffect, useState} from 'react';
+import {
+    Box,
+    CircularProgress,
+    CssBaseline,
+    Experimental_CssVarsProvider as CssVarsProvider,
+    experimental_extendTheme as extendTheme,
+    StyledEngineProvider
+} from '@mui/material';
+import themeOptions from './theme';
+import {AnimatedRoutes} from './AnimatedRouter';
+import {SnackbarProvider, useSnackbar, VariantType} from 'notistack';
+import {useTranslation} from 'react-i18next';
 
-export interface PaletteModeChildProps {
-    paletteMode: PaletteMode;
-    setPaletteMode: (newPaletteMode: PaletteMode) => void;
+interface PageContextType {
+    loading: boolean;
+    setLoading: (newLoading: boolean) => void;
+    snack: (message: string, type: VariantType) => void;
+    apiSnack: (message: string, type?: VariantType) => void;
+    mobile: boolean;
+    setMobile: (newMobile: boolean) => void;
 }
 
-export const Page = () => {
-    const [paletteMode, setPaletteMode] = useState<PaletteMode>('light');
+export const PageContext = createContext<PageContextType>({
+    loading: false,
+    setLoading: () => {
+    },
+    snack: () => {
+    },
+    apiSnack: () => {
+    },
+    mobile: false,
+    setMobile: () => {
+    }
+});
 
-    const theme: Theme = React.useMemo(() => createTheme(getDesignTokens(paletteMode)), [paletteMode]);
+export const usePage = () => useContext(PageContext);
+
+type PageProviderProps = PropsWithChildren & {
+    mobile: boolean;
+    setMobile: (newMobile: boolean) => void;
+}
+
+export const PageProvider: React.FC<PageProviderProps> = ({children, mobile, setMobile}) => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
+    const [t, i18n] = useTranslation();
+
+    i18n.on('languageChanged', () => closeSnackbar());
+
+    const snack = (message: string, type: VariantType = 'default') => {
+        enqueueSnackbar(message, {
+            variant: type
+        });
+    };
+
+    const apiSnack = (message: string, type: VariantType = 'error') => {
+        if (!i18n.exists(message)) {
+            snack(t('OTHER', {type: message}), type);
+            return;
+        }
+        snack(t(message), type);
+    };
+
+    const value: PageContextType = {
+        loading, setLoading, snack, apiSnack, mobile, setMobile
+    };
 
     return (
-
-        <ThemeProvider theme={theme}>
-            <StyledEngineProvider injectFirst> {/* inject sass */}
-                <CssBaseline/>
-                <Router>
-                    <Navigation paletteMode={paletteMode} setPaletteMode={setPaletteMode}/>
-                    <Routes>
-                        <Route path={'/'} element={<Root/>}/>
-                    </Routes>
-                </Router>
-            </StyledEngineProvider>
-        </ThemeProvider>
+        <>
+            <PageContext.Provider value={value}>
+                {children}
+            </PageContext.Provider>
+            {(loading)
+                ? <Box className={'loading'}><CircularProgress/></Box>
+                : undefined}
+        </>
     );
 };
 
-const getDesignTokens = (themeMode: PaletteMode): ThemeOptions => ({
-    palette: {
-        mode: themeMode,
-        ...(themeMode === 'light'
-                ? {
-                    primary: granny_smith_apple,
-                    secondary: caper,
-                    error: red,
-                    accent: texas,
-                    text: {
-                        primary: '#000',
-                        secondary: grey[900],
-                        disabled: grey[500]
-                    },
-                    background: {
-                        paper: '#F9FAFE',
-                        default: '#cbcbcb'
-                    }
-                }
-                : {
-                    primary: palm_leaf,
-                    secondary: clover,
-                    error: red,
-                    accent: bronze_olive,
-                    text: {
-                        primary: '#fff',
-                        secondary: grey[200],
-                        disabled: grey[500]
-                    },
-                    background: {
-                        default: '#1C1E2A',
-                        paper: '#14141D'
-                    }
-                }
-        )
-    },
-    typography: {
-        fontFamily: [
-            'Changa',
-            'Arial',
-            'sans-serif'
-        ].join(',')
+export const Page = () => {
+    const [mobile, setMobile] = useState<boolean>(isMobile());
+
+    function isMobile(): boolean {
+        return window.innerWidth <= 768;
     }
-});
+
+    function windowResize() {
+        setMobile(isMobile());
+    }
+
+    useEffect(() => {
+        window.addEventListener('resize', windowResize);
+        return () => {
+            window.removeEventListener('resize', windowResize);
+        };
+    }, []);
+
+    return (
+        <CssVarsProvider theme={extendTheme(themeOptions)}>
+            <StyledEngineProvider injectFirst> {/* inject scss */}
+                <CssBaseline/>
+                <SnackbarProvider maxSnack={mobile ? 2 : 5}
+                                  dense={mobile}
+                                  autoHideDuration={8000}
+                                  anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
+                    <PageProvider mobile={mobile} setMobile={setMobile}>
+                        <Router>
+                            <Header/>
+                            <div className={'main'}>
+                                <AnimatedRoutes/>
+                            </div>
+                        </Router>
+                    </PageProvider>
+                </SnackbarProvider>
+            </StyledEngineProvider>
+        </CssVarsProvider>
+    );
+};
