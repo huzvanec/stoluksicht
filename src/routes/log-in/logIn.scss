@@ -1,6 +1,6 @@
-.register-form {
+.log-in-form {
   align-items: center;
-  margin-top: 8vh;
+  margin-top: 12svh;
 
   .email-suffix {
     margin-top: 5px;
@@ -15,17 +15,5 @@
   .email-helper {
     margin-top: 102px;
     position: absolute;
-  }
-}
-
-.verify-send-form {
-  margin-top: 20vh;
-
-  .verify-resend {
-    margin-top: 25px;
-  }
-
-  .verify-expired {
-    color: var(--mui-palette-error-main);
   }
 }

@@ -1,13 +1,14 @@
 import {Route, Routes, useLocation} from 'react-router-dom';
 import {Home} from './routes/home/Home';
-import React from 'react';
+import React, {HTMLAttributes} from 'react';
 import {Calendar} from './routes/calendar/Calendar';
-import {AnimatePresence, motion, Variants} from 'framer-motion';
+import {AnimatePresence, motion, MotionProps, Variants} from 'framer-motion';
 import {LogIn} from './routes/log-in/LogIn';
 import {Register} from './routes/register/Register';
+import {Verify} from './routes/verify/Verify';
 
 // animation
-const variants: Variants = {
+export const variants: Variants = {
     initial: {
         scale: .95,
         opacity: 0,
@@ -26,14 +27,18 @@ const variants: Variants = {
     }
 };
 
-// animation route wrapper
-const a = (child: React.ReactNode): React.ReactNode => {
+export const animation: MotionProps & HTMLAttributes<any> = {
+    className: 'motion',
+    variants: variants,
+    initial: 'initial',
+    animate: 'final',
+    exit: 'exit'
+};
+
+// animation wrapper
+export const a = (child: React.JSX.Element, state?: any): React.JSX.Element => {
     return (
-        <motion.div className={'motion'}
-                    variants={variants}
-                    initial={'initial'}
-                    animate={'final'}
-                    exit={'exit'}>
+        <motion.div key={state} {...animation}>
             {child}
         </motion.div>
     );
@@ -45,10 +50,14 @@ export const AnimatedRoutes = () => {
     return (
         <AnimatePresence mode={'wait'}>
             <Routes location={location} key={location.key}>
-                <Route path={'/'} element={a(<Home/>)}/>
+                <Route index element={a(<Home/>)}/>
                 <Route path={'/cal'} element={a(<Calendar/>)}/>
                 <Route path={'/log-in'} element={a(<LogIn/>)}/>
                 <Route path={'/register'} element={a(<Register/>)}/>
+                <Route path={'/verify/*'} element={<Verify/>}>
+                    <Route path={':code'} element={<Verify/>}/>
+                    <Route index element={<Verify/>}/>
+                </Route>
             </Routes>
         </AnimatePresence>
     );

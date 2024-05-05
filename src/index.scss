@@ -22,8 +22,12 @@ body {
   height: 100%;
   position: relative;
   overflow: hidden;
-  background-size: cover;
+  background-size: auto;
   background: bgr(rgba(0, 0, 0, 0.5));
+
+  * {
+    font-weight: bold !important;
+  }
 
   .root {
     min-height: 100%;
@@ -61,4 +65,22 @@ body {
   width: 100%;
   backdrop-filter: blur(2px);
   z-index: 999;
+}
+
+.form {
+  width: min(85%, 500px);
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2vh;
+  padding: 28px;
+
+  .title {
+    margin-bottom: 2vh;
+    align-self: center;
+  }
+}
+
+.MuiSvgIcon-root {
+  transition: .3s;
 }

@@ -1,9 +1,7 @@
 import {Header} from './header/Header';
 import {BrowserRouter as Router} from 'react-router-dom';
-import React, {createContext, PropsWithChildren, useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    Box,
-    CircularProgress,
     CssBaseline,
     Experimental_CssVarsProvider as CssVarsProvider,
     experimental_extendTheme as extendTheme,
@@ -11,92 +9,68 @@ import {
 } from '@mui/material';
 import themeOptions from './theme';
 import {AnimatedRoutes} from './AnimatedRouter';
-import {SnackbarProvider, useSnackbar, VariantType} from 'notistack';
+import {SnackbarProvider} from 'notistack';
 import {useTranslation} from 'react-i18next';
+import {StoluProvider} from './provider/StoluProvider';
+import {ApiProvider} from './provider/ApiProvider';
 
-interface PageContextType {
-    loading: boolean;
-    setLoading: (newLoading: boolean) => void;
-    snack: (message: string, type: VariantType) => void;
-    apiSnack: (message: string, type?: VariantType) => void;
-    mobile: boolean;
-    setMobile: (newMobile: boolean) => void;
-}
-
-export const PageContext = createContext<PageContextType>({
-    loading: false,
-    setLoading: () => {
-    },
-    snack: () => {
-    },
-    apiSnack: () => {
-    },
-    mobile: false,
-    setMobile: () => {
-    }
-});
-
-export const usePage = () => useContext(PageContext);
-
-type PageProviderProps = PropsWithChildren & {
-    mobile: boolean;
-    setMobile: (newMobile: boolean) => void;
-}
-
-export const PageProvider: React.FC<PageProviderProps> = ({children, mobile, setMobile}) => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
-    const [t, i18n] = useTranslation();
-
-    i18n.on('languageChanged', () => closeSnackbar());
-
-    const snack = (message: string, type: VariantType = 'default') => {
-        enqueueSnackbar(message, {
-            variant: type
-        });
-    };
-
-    const apiSnack = (message: string, type: VariantType = 'error') => {
-        if (!i18n.exists(message)) {
-            snack(t('OTHER', {type: message}), type);
-            return;
-        }
-        snack(t(message), type);
-    };
-
-    const value: PageContextType = {
-        loading, setLoading, snack, apiSnack, mobile, setMobile
-    };
-
-    return (
-        <>
-            <PageContext.Provider value={value}>
-                {children}
-            </PageContext.Provider>
-            {(loading)
-                ? <Box className={'loading'}><CircularProgress/></Box>
-                : undefined}
-        </>
-    );
-};
+const consoleWarning: boolean = false;
 
 export const Page = () => {
+    const [t] = useTranslation();
+
+    const isMobile = (): boolean => window.innerWidth <= 1000;
     const [mobile, setMobile] = useState<boolean>(isMobile());
-
-    function isMobile(): boolean {
-        return window.innerWidth <= 768;
-    }
-
-    function windowResize() {
-        setMobile(isMobile());
-    }
+    const onWindowResize = (): void => setMobile(isMobile());
 
     useEffect(() => {
-        window.addEventListener('resize', windowResize);
+        window.addEventListener('resize', onWindowResize);
         return () => {
-            window.removeEventListener('resize', windowResize);
+            window.removeEventListener('resize', onWindowResize);
         };
     }, []);
+
+    useEffect(() => {
+        if (!consoleWarning) return;
+        console.clear();
+        const cssConsole = (msg: string, css: string) => {
+            console.log(`%c${msg}`, css);
+        };
+        cssConsole(
+            t('consoleWarning1'),
+            `
+            color: red;
+            font-weight: bold;
+            font-size: 100px;
+            `
+        );
+        cssConsole(
+            t('consoleWarning2'),
+            `
+            color: aqua;
+            font-weight: bold;
+            font-size: 50px;
+            `
+        );
+        cssConsole(
+            t('consoleWarning3'),
+            `
+            color: orange;
+            font-weight: bold;
+            font-size: 30px;
+            `
+        );
+        cssConsole(
+            t('consoleContribute'),
+            `
+            font-size: 15px;
+            color: pink;
+            font-weight: bold;
+            `
+        );
+        cssConsole('https://github.com/Mandlemankiller/StolujemeAPI', 'font-size: 15px');
+        cssConsole('https://github.com/Mandlemankiller/stolujeme-ksicht', 'font-size: 15px');
+    }, [t]);
 
     return (
         <CssVarsProvider theme={extendTheme(themeOptions)}>
@@ -105,15 +79,20 @@ export const Page = () => {
                 <SnackbarProvider maxSnack={mobile ? 2 : 5}
                                   dense={mobile}
                                   autoHideDuration={8000}
-                                  anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
-                    <PageProvider mobile={mobile} setMobile={setMobile}>
-                        <Router>
-                            <Header/>
-                            <div className={'main'}>
-                                <AnimatedRoutes/>
-                            </div>
-                        </Router>
-                    </PageProvider>
+                                  anchorOrigin={{
+                                      vertical: mobile ? 'top' : 'bottom',
+                                      horizontal: 'left'
+                                  }}>
+                    <StoluProvider mobile={mobile}>
+                        <ApiProvider>
+                            <Router>
+                                <Header/>
+                                <div className={'main'}>
+                                    <AnimatedRoutes/>
+                                </div>
+                            </Router>
+                        </ApiProvider>
+                    </StoluProvider>
                 </SnackbarProvider>
             </StyledEngineProvider>
         </CssVarsProvider>

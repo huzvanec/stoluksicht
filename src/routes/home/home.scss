@@ -1,8 +1,11 @@
+$stroke-duration: 3.5s;
+$fill-duration: 2s;
+$fill-delay: 1.5s;
+
 .logo {
   $opacity: 70%;
   width: 100%;
-  height: 70svh;
-  padding: 10px;
+  height: 90svh;
 
   svg {
     stroke-dasharray: 100%;
@@ -31,7 +34,7 @@
 
   .animated {
     stroke-dashoffset: 100%;
-    animation: stroke 6s forwards, fill 2.5s 2.8s forwards;
+    animation: stroke $stroke-duration forwards, fill $fill-duration $fill-delay forwards;
     fill-opacity: 0;
 
     @keyframes stroke {
