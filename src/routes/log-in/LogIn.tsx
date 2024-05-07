@@ -7,6 +7,7 @@ import {EmailField, LinkField, PasswordField} from '../../form';
 import {NavigateFunction, useNavigate} from 'react-router-dom';
 import useStolu from '../../provider/StoluProvider';
 import useApi, {AnyData, SuccessResponse} from '../../provider/ApiProvider';
+import bear from '../../media/bear.mp4';
 
 export const LogIn = () => {
     const navigate: NavigateFunction = useNavigate();
@@ -58,7 +59,7 @@ export const LogIn = () => {
             <LinkField to={'/register'}
                        text={t('dontHaveAccount')}/>
             <LinkField target={'_blank'}
-                       to={'https://youtu.be/_snjLiqvSOg'}
+                       to={bear}
                        text={t('forgottenPassword')}/>
         </Box>
     );

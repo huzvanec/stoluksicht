@@ -19,6 +19,7 @@ i18n.use(initReactI18next)
                     home: 'Domů',
                     logIn: 'Přihlásit se',
                     register: 'Registrovat se',
+                    menu: 'Jídelníček',
                     // themes
                     dark: 'tmavý',
                     light: 'světlý',
@@ -71,6 +72,7 @@ i18n.use(initReactI18next)
                     home: 'Home',
                     logIn: 'Log in',
                     register: 'Register',
+                    menu: 'Menu',
                     // themes
                     dark: 'dark',
                     light: 'light',

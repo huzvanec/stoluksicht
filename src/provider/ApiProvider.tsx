@@ -1,6 +1,8 @@
 import React, {createContext, PropsWithChildren, useContext, useEffect, useState} from 'react';
 import axios, {AxiosError, AxiosInstance, AxiosResponse} from 'axios';
-import {Setter} from './StoluProvider';
+import useStolu, {Setter} from './StoluProvider';
+import {VariantType} from 'notistack';
+import {useTranslation} from 'react-i18next';
 
 export const apiBaseUrl: string = process.env.REACT_APP_BASE_URL as string;
 export const tokenStorageKey: string = 'token';
@@ -51,7 +53,7 @@ export default useApi;
 
 export type ApiProviderProps = PropsWithChildren & {}
 
-const api = axios.create({
+const api: AxiosInstance = axios.create({
     baseURL: apiBaseUrl,
     headers: {
         'Content-Type': 'application/json'
@@ -60,6 +62,15 @@ const api = axios.create({
 
 export const ApiProvider: React.FC<ApiProviderProps> = ({children}) => {
     const [token, setToken] = useState<string | null>(localStorage.getItem(tokenStorageKey));
+    const {snack} = useStolu();
+    const [t, i18n] = useTranslation();
+    const errorSnack = (error: string, type: VariantType = 'error') => {
+        if (!i18n.exists(error)) {
+            snack(t('OTHER', {type: error}), type);
+            return;
+        }
+        snack(t(error), type);
+    };
 
     const setAxiosToken = () => {
         api.defaults.headers.common.Authorization = token ? `Bearer ${token}` : undefined;
@@ -68,9 +79,9 @@ export const ApiProvider: React.FC<ApiProviderProps> = ({children}) => {
     const reloadToken = async () => {
         console.debug('Authentication...');
         if (!token) {
+            console.debug('Token not present.');
             localStorage.removeItem(tokenStorageKey);
             setAxiosToken();
-            console.debug('Token not present.');
             return;
         }
         localStorage.setItem(tokenStorageKey, token);
@@ -101,11 +112,15 @@ export const ApiProvider: React.FC<ApiProviderProps> = ({children}) => {
         } catch (e_) {
             const error: AxiosError = e_ as AxiosError;
             console.debug(error);
-            if (!error.response) return null;
+            if (!error.response) {
+                errorSnack('CONNECTION');
+                return null;
+            }
             const data: AnyData = error.response.data as AnyData;
             if (data.error.type === 'AUTHENTICATION_INVALID') {
                 setToken(null);
             }
+            errorSnack(data.error.type);
             return {
                 timestamp: new Date(data.timestamp),
                 success: data.success,

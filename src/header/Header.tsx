@@ -331,13 +331,9 @@ const Navigation: React.FC<TabsProps> = ({className, ...other}) => {
             value: ''
         },
         {
-            label: 'ŘŘŘŮŮŮ',
-            value: 'cal',
-        },
-        {
-            label: 'Meals',
-            value: 'meals',
-            icon: 'fa-solid fa-bowl-food'
+            icon: 'fa-solid fa-bowl-food',
+            label: t('menu'),
+            value: 'menu'
         }
     ];
 

@@ -1,7 +1,6 @@
 import {Route, Routes, useLocation} from 'react-router-dom';
 import {Home} from './routes/home/Home';
 import React, {HTMLAttributes} from 'react';
-import {Calendar} from './routes/calendar/Calendar';
 import {AnimatePresence, motion, MotionProps, Variants} from 'framer-motion';
 import {LogIn} from './routes/log-in/LogIn';
 import {Register} from './routes/register/Register';
@@ -51,7 +50,6 @@ export const AnimatedRoutes = () => {
         <AnimatePresence mode={'wait'}>
             <Routes location={location} key={location.key}>
                 <Route index element={a(<Home/>)}/>
-                <Route path={'/cal'} element={a(<Calendar/>)}/>
                 <Route path={'/log-in'} element={a(<LogIn/>)}/>
                 <Route path={'/register'} element={a(<Register/>)}/>
                 <Route path={'/verify/*'} element={<Verify/>}>
