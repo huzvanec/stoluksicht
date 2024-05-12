@@ -63,7 +63,24 @@ i18n.use(initReactI18next)
                     consoleContribute: 'Pokud víš co děláš a toto varování není pro tebe, budeme rádi za příspěvek! Stolujeme je plnně open-source!',
                     // account
                     myAccount: 'Můj účet',
-                    logOut: 'Odhlásit se'
+                    logOut: 'Odhlásit se',
+                    // menu
+                    soup: 'Polévka',
+                    addition: 'Doplňek',
+                    personalRating: 'Osobní hodnocení',
+                    globalRating: 'Celoškolní hodnocení',
+                    monday: 'Pondělí',
+                    tuesday: 'Úterý',
+                    wednesday: 'Středa',
+                    thursday: 'Čtvrtek',
+                    friday: 'Pátek',
+                    saturday: 'Sobota',
+                    sunday: 'Neděle',
+                    float: ',',
+                    // footer
+                    openSource: 'Stolujeme je open-source.',
+                    licence: 'Pokud není uvedeno jinak, veškerý obsah této webové stránky je licencován pod licencí <0/>.',
+                    disclaimer: 'STOLUJEME NENÍ OFICIÁLNÍM PRODUKTEM STRAVY. NENÍ SCHVÁLENO ANI SPOJENO SE <0/> NEBO <1/>.'
                 }
             },
             en: {
@@ -115,7 +132,24 @@ i18n.use(initReactI18next)
                     consoleContribute: 'If you know what you\'re doing and this warning isn\'t for you, contributions are welcome! Stolujeme is fully open-source!',
                     // account
                     myAccount: 'My account',
-                    logOut: 'Log out'
+                    logOut: 'Log out',
+                    // menu
+                    soup: 'Soup',
+                    addition: 'Addition',
+                    personalRating: 'Personal rating',
+                    globalRating: 'School-wide rating',
+                    monday: 'Monday',
+                    tuesday: 'Tuesday',
+                    wednesday: 'Wednesday',
+                    thursday: 'Thursday',
+                    friday: 'Friday',
+                    saturday: 'Saturday',
+                    sunday: 'Sunday',
+                    float: '.',
+                    // footer
+                    openSource: 'Stolujeme is open-source.',
+                    licence: 'Unless stated otherwise, all contents of this website are licenced under the <0/> licence.',
+                    disclaimer: 'STOLUJEME IS NOT AN OFFICIAL STRAVA PRODUCT. NOT APPROVED BY OR AFFILIATED WITH <0/> OR <1/>.'
                 }
             }
         }

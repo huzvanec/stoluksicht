@@ -131,6 +131,7 @@ const popoverTop: { [key: string]: PopoverOrigin } = {
     }
 };
 
+export const bleeding: number = 75; // the draggable area of the drawer in px
 const MobileDrawer: React.FC = () => {
     const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
     const [buttonMenuAnchor, setButtonMenuAnchor] = useState<HTMLElement | null>(null);
@@ -142,7 +143,6 @@ const MobileDrawer: React.FC = () => {
     };
     const [t] = useTranslation();
     const [open, setOpen] = useState<boolean>(false);
-    const bleeding: number = 75; // the draggable area of the drawer in px
 
     const {token} = useApi();
 
@@ -195,15 +195,14 @@ const MobileDrawer: React.FC = () => {
     };
     return (
         <SwipeableDrawer className={'drawer'}
-                         anchor={'bottom'}
                          open={open}
+                         anchor={'bottom'}
                          onClose={() => setOpen(false)}
                          onOpen={() => setOpen(true)}
                          swipeAreaWidth={bleeding}
                          disableSwipeToOpen={false}
-                         allowSwipeInChildren={true}
-                         sx={{'> .MuiPaper-root': {height: `calc(max(50%, 310px) - ${bleeding}px)`,}}}>
-            <Box className={'puller'}
+                         allowSwipeInChildren={true}>
+            <Box className={'puller menu'}
                  sx={{top: -(bleeding), height: `calc(${bleeding}px + .1svh)`}}>
                 <StoluIconButton icon={'fa-solid fa-user'}
                                  onClick={openMenu}

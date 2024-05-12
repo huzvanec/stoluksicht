@@ -8,11 +8,12 @@ import {
     StyledEngineProvider
 } from '@mui/material';
 import themeOptions from './theme';
-import {AnimatedRoutes} from './AnimatedRouter';
+import {AnimatedRoutes} from './Router';
 import {SnackbarProvider} from 'notistack';
 import {useTranslation} from 'react-i18next';
 import {StoluProvider} from './provider/StoluProvider';
 import {ApiProvider} from './provider/ApiProvider';
+import {Footer} from './footer/Footer';
 
 const consoleWarning: boolean = false;
 
@@ -30,6 +31,7 @@ export const Page = () => {
         };
     }, []);
 
+    //<editor-fold defaultstate="collapsed" desc="consoleWarnings">
     useEffect(() => {
         if (!consoleWarning) return;
         console.clear();
@@ -71,6 +73,7 @@ export const Page = () => {
         cssConsole('https://github.com/Mandlemankiller/StolujemeAPI', 'font-size: 15px');
         cssConsole('https://github.com/Mandlemankiller/stolujeme-ksicht', 'font-size: 15px');
     }, [t]);
+    //</editor-fold>
 
     return (
         <CssVarsProvider theme={extendTheme(themeOptions)}>
@@ -86,10 +89,12 @@ export const Page = () => {
                     <StoluProvider mobile={mobile}>
                         <ApiProvider>
                             <Router>
+                                <div className={'bg'}/>
                                 <Header/>
-                                <div className={'main'}>
+                                <main style={{minHeight: mobile ? '100svh' : 'calc(100svh - 85px)'}}>
                                     <AnimatedRoutes/>
-                                </div>
+                                </main>
+                                <Footer/>
                             </Router>
                         </ApiProvider>
                     </StoluProvider>

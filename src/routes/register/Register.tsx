@@ -3,7 +3,7 @@ import {Box, Button, Typography} from '@mui/material';
 import {useTranslation} from 'react-i18next';
 import React, {useEffect, useState} from 'react';
 import {FieldValues, useForm} from 'react-hook-form';
-import {a} from '../../AnimatedRouter';
+import {a} from '../../Router';
 import {currentLanguage} from '../../i18n';
 import {EmailField, LinkField, NameField, PasswordField} from '../../form';
 import useStolu from '../../provider/StoluProvider';

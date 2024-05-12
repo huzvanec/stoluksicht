@@ -9,6 +9,8 @@ const root: ReactDOM.Root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 
-root.render(<Page/>);
+root.render(
+    <Page/>
+);
 
 export type Renderer = () => React.ReactNode;
