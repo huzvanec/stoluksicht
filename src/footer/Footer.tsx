@@ -18,7 +18,7 @@ export const Footer = () => {
             </Typography>
             <Typography>
                 <Trans i18nKey={'licence'} components={[
-                    <Link href={'https://raw.githubusercontent.com/Mandlemankiller/stolujeme-ksicht/master/LICENCE'}>
+                    <Link href={'https://raw.githubusercontent.com/Mandlemankiller/stoluksicht/master/LICENCE'}>
                         WTFPL
                     </Link>
                 ]}/>
