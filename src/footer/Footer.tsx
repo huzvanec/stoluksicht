@@ -11,11 +11,10 @@ export const footerPadding: number = 50; // px
 export const Footer = () => {
     const [t] = useTranslation();
     const {mobile} = useStolu();
-    const repo: string = 'https://github.com/Mandlemankiller/stoluksicht';
     return (
         <footer style={{
-            padding: footerPadding,
-            paddingBottom: mobile ? `${bleeding + footerPadding}px` : footerPadding
+            paddingTop: `${footerPadding}px`,
+            paddingBottom: mobile ? `${footerPadding + bleeding}px` : `${footerPadding}px`
         }}>
             <Box className={'cols'}
                  sx={{
@@ -39,7 +38,7 @@ export const Footer = () => {
                     <Typography>
                         <Trans i18nKey={'openSource'} components={[
                             <Link target={'_blank'}
-                                  href={repo}>
+                                  href={'https://github.com/Mandlemankiller/stoluksicht'}>
                                 open-source
                             </Link>
                         ]}/>
@@ -60,17 +59,19 @@ export const Footer = () => {
                     <Link
                         href={headHash
                             ? `https://github.com/Mandlemankiller/stoluksicht/tree/${headHash}`
-                            : repo}
+                            : undefined}
                         target={'_blank'}>
-                        Mandlemankiller/stoluksicht/master@{headHash ?? 'unknown'}
+                        stoluksicht/master@{headHash ?? 'development'}
                     </Link>
                 </Typography>
                 <Typography variant={'subtitle2'}>
                     <Trans i18nKey={'disclaimer'} components={[
-                        <Link href={'https://strava.cz'}>
+                        <Link href={'https://strava.cz'}
+                              target={'_blank'}>
                             STRAVA.CZ
                         </Link>,
-                        <Link href={'https://visplzen.cz'}>
+                        <Link href={'https://visplzen.cz'}
+                              target={'_blank'}>
                             VIS, PLZEŇ S.R.O.
                         </Link>
                     ]}/>

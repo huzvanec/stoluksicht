@@ -1,6 +1,7 @@
+$start-delay: .3s;
 $stroke-duration: 3.5s;
 $fill-duration: 2s;
-$fill-delay: 1.5s;
+$fill-delay: $start-delay + 1.5s;
 
 .logo {
   $opacity: 70%;
@@ -35,7 +36,7 @@ $fill-delay: 1.5s;
 
   .animated {
     stroke-dashoffset: 100%;
-    animation: stroke $stroke-duration forwards, fill $fill-duration $fill-delay forwards;
+    animation: stroke $stroke-duration $start-delay forwards, fill $fill-duration $fill-delay forwards;
     fill-opacity: 0;
 
     @keyframes stroke {
