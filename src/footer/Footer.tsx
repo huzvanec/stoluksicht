@@ -19,8 +19,8 @@ export const Footer = () => {
         }}>
             <Box className={'cols'}
                  sx={{
-                     flexDirection: mobile ? 'column' : 'row',
-                     textAlign: mobile ? 'center' : 'default'
+                     flexDirection: mobile ? 'column' : undefined,
+                     textAlign: mobile ? 'center' : undefined
                  }}>
                 <Box>
                     <Typography>
