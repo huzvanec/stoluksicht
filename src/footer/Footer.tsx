@@ -1,8 +1,9 @@
 import './footer.scss';
-import {Box, Link, Typography} from '@mui/material';
+import {Box, Divider, Link, Typography} from '@mui/material';
 import {Trans, useTranslation} from 'react-i18next';
 import useStolu from '../provider/StoluProvider';
 import {bleeding} from '../header/Header';
+import React from 'react';
 
 const headHash: string | undefined = process.env.REACT_APP_HEAD_HASH;
 
@@ -16,7 +17,11 @@ export const Footer = () => {
             padding: footerPadding,
             paddingBottom: mobile ? `${bleeding + footerPadding}px` : footerPadding
         }}>
-            <Box className={'cols'}>
+            <Box className={'cols'}
+                 sx={{
+                     flexDirection: mobile ? 'column' : 'row',
+                     textAlign: mobile ? 'center' : 'default'
+                 }}>
                 <Box>
                     <Typography>
                         Copyright &copy; 2024—{new Date().getFullYear()} <Link href={'https://jeme.cz'}>Jeme</Link>
@@ -49,6 +54,7 @@ export const Footer = () => {
                     </Link>
                 </Box>
             </Box>
+            <Divider/>
             <Box className={'caption'}>
                 <Typography variant={'subtitle2'}>
                     <Link
