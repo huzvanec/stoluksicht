@@ -1,0 +1,6 @@
+// Local tsconfig for the ts scripts
+{
+  "compilerOptions": {
+    "esModuleInterop": true
+  }
+}

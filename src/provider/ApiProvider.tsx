@@ -4,7 +4,7 @@ import useStolu, {Setter} from './StoluProvider';
 import {VariantType} from 'notistack';
 import {useTranslation} from 'react-i18next';
 
-export const apiBaseUrl: string = process.env.REACT_APP_BASE_URL as string;
+export const apiBaseUrl: string = process.env.REACT_APP_API_BASE_URL as string;
 export const tokenStorageKey: string = 'token';
 
 export interface AnyData {

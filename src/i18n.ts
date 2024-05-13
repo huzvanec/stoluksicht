@@ -78,9 +78,11 @@ i18n.use(initReactI18next)
                     sunday: 'Neděle',
                     float: ',',
                     // footer
-                    openSource: 'Stolujeme je open-source.',
-                    licence: 'Pokud není uvedeno jinak, veškerý obsah této webové stránky je licencován pod licencí <0/>.',
-                    disclaimer: 'STOLUJEME NENÍ OFICIÁLNÍM PRODUKTEM STRAVY. NENÍ SCHVÁLENO ANI SPOJENO SE <0/> NEBO <1/>.'
+                    openSource: 'Stolujeme je <0/>',
+                    licence: 'Licencováno pod <0/>',
+                    disclaimer: 'STOLUJEME NENÍ OFICIÁLNÍM PRODUKTEM STRAVY. NENÍ SCHVÁLENO ANI SPOJENO SE <0/> NEBO <1/>.',
+                    reportBug: 'Nahlásit chybu',
+                    requestFeature: 'Navrhnout featuru'
                 }
             },
             en: {
@@ -147,9 +149,11 @@ i18n.use(initReactI18next)
                     sunday: 'Sunday',
                     float: '.',
                     // footer
-                    openSource: 'Stolujeme is open-source.',
-                    licence: 'Unless stated otherwise, all contents of this website are licenced under the <0/> licence.',
-                    disclaimer: 'STOLUJEME IS NOT AN OFFICIAL STRAVA PRODUCT. NOT APPROVED BY OR AFFILIATED WITH <0/> OR <1/>.'
+                    openSource: 'Stolujeme is <0/>',
+                    licence: 'Licenced under <0/>',
+                    disclaimer: 'STOLUJEME IS NOT AN OFFICIAL STRAVA PRODUCT. NOT APPROVED BY OR AFFILIATED WITH <0/> OR <1/>.',
+                    reportBug: 'Report a bug',
+                    requestFeature: 'Suggest a feature'
                 }
             }
         }
