@@ -77,6 +77,7 @@ i18n.use(initReactI18next)
                     saturday: 'Sobota',
                     sunday: 'Neděle',
                     float: ',',
+                    dateFormat: '{{day}}. {{month}}. {{year}}',
                     // footer
                     openSource: 'Stolujeme je <0/>',
                     licence: 'Licencováno pod <0/>',
@@ -148,6 +149,7 @@ i18n.use(initReactI18next)
                     saturday: 'Saturday',
                     sunday: 'Sunday',
                     float: '.',
+                    dateFormat: '{{day}}/{{month}}/{{year}}',
                     // footer
                     openSource: 'Stolujeme is <0/>',
                     licence: 'Licenced under <0/>',

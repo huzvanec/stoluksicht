@@ -13,10 +13,10 @@ export const Menu: React.FC = () => {
         <Box className={'menu-container'}>
             <Box className={'menu-meals'}
                  sx={{
-                     marginBottom: (mobile ? 15 : 7) + 'svh',
                      marginTop: (mobile ? 5 : 3) + 'svh'
                  }}>
                 <MenuDay date={new Date('2024-05-07')}/>
+                <MenuDay date={new Date('2024-05-13')}/>
             </Box>
         </Box>
     );
@@ -26,12 +26,18 @@ interface MenuDayProps {
     date: Date;
 }
 
-const formatDate = (date: Date): string => {
-    return `${date.getDay()}. ${date.getMonth() + 1}. ${date.getFullYear()}`;
-};
 
 const MenuDay: React.FC<MenuDayProps> = ({date}) => {
     const [t] = useTranslation();
+
+    const formatDate = (date: Date): string => {
+        return t('dateFormat', {
+            day: date.getDay(),
+            month: date.getMonth() + 1, // counted from zero
+            year: date.getFullYear()
+        });
+    };
+
     return (
         <Box className={'menu-day menu'}>
             <Typography className={'title'}
@@ -120,11 +126,13 @@ const Meal: React.FC<MealProps> = ({
         <Box className={'meal'}>
             <Typography className={'type'} variant={'h6'}>{type}</Typography>
             <Typography className={'name'}>{name}</Typography>
-            <Box className={'ratings'}>
+            <Box className={'rating-box'}>
                 {/*<Rating icon={<i className={'fa-solid fa-utensils'}/>}/>*/}
                 <Rating/>
-                <MealRating rating={4.4} icon={'fa-solid fa-user'} tooltip={t('personalRating')}/>
-                <MealRating rating={3.4} icon={'fa-solid fa-users'} tooltip={t('globalRating')}/>
+                <Box className={'ratings'}>
+                    <MealRating rating={4.4} icon={'fa-solid fa-user'} tooltip={t('personalRating')}/>
+                    <MealRating rating={3.4} icon={'fa-solid fa-users'} tooltip={t('globalRating')}/>
+                </Box>
             </Box>
         </Box>
     );

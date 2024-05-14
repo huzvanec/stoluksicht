@@ -6,10 +6,12 @@
   align-items: center;
 
   .menu-meals {
-    width: 85%;
+    width: 90%;
+    max-width: 75rem;
     display: flex;
     flex-grow: 1;
     flex-direction: column;
+    padding-bottom: 5%;
     gap: 20px;
 
     .menu-day {
@@ -22,13 +24,9 @@
         padding: 15px;
         display: flex;
         flex-direction: column;
-        gap: 7px;
+        gap: 12px;
         background-color: color-mix(in srgb, var(--mui-palette-background-paper), transparent 40%);
         border-radius: 15px;
-
-        .meal-header, .ratings {
-          display: flex;
-        }
 
         .type {
           width: 80px;
@@ -39,29 +37,36 @@
           font-weight: normal;
         }
 
-        .ratings {
-          flex-wrap: wrap;
+        .rating-box {
+          display: flex;
           justify-content: space-between;
+          flex-wrap: wrap;
+          gap: inherit;
 
-          .rating-tooltip {
+          .ratings {
             display: flex;
-          }
+            gap: inherit;
 
-          .rating {
-            display: flex;
-            align-items: center;
-            line-height: 100%;
-            gap: 2px;
-            user-select: none;
-            cursor: help;
-
-            .rating-icon {
-              margin-right: 3px;
+            .rating-tooltip {
+              display: flex;
             }
 
-            .rating-star {
-              font-size: .8em;
-              color: var(--mui-palette-secondary-main);
+            .rating {
+              display: flex;
+              align-items: center;
+              line-height: 100%;
+              gap: 2px;
+              user-select: none;
+              cursor: help;
+
+              .rating-icon {
+                margin-right: 3px;
+              }
+
+              .rating-star {
+                font-size: .8em;
+                color: var(--mui-palette-secondary-main);
+              }
             }
           }
         }
