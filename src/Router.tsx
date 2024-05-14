@@ -54,7 +54,7 @@ export const AnimatedRoutes = () => {
     return (
         <AnimatePresence mode={'wait'}>
             <Routes location={location} key={location.key}>
-                <Route index element={(<Home/>)}/>
+                <Route index element={a(<Home/>)}/>
                 <Route path={'/log-in'} element={a(<LogIn/>)}/>
                 <Route path={'/register'} element={a(<Register/>)}/>
                 <Route path={'/verify/*'} element={<Verify/>}>
