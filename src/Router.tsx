@@ -1,6 +1,6 @@
 import {Route, Routes, useLocation} from 'react-router-dom';
 import {Home} from './routes/home/Home';
-import React, {HTMLAttributes} from 'react';
+import React, {HTMLAttributes, useEffect} from 'react';
 import {AnimatePresence, motion, MotionProps, Variants} from 'framer-motion';
 import {LogIn} from './routes/log-in/LogIn';
 import {Register} from './routes/register/Register';
@@ -47,10 +47,14 @@ export const a = (child: React.JSX.Element, state?: any): React.JSX.Element => {
 export const AnimatedRoutes = () => {
     const location = useLocation();
 
+    useEffect(() => {
+        window.scroll({top: 0, behavior: 'smooth'});
+    }, [location]);
+
     return (
         <AnimatePresence mode={'wait'}>
             <Routes location={location} key={location.key}>
-                <Route index element={a(<Home/>)}/>
+                <Route index element={(<Home/>)}/>
                 <Route path={'/log-in'} element={a(<LogIn/>)}/>
                 <Route path={'/register'} element={a(<Register/>)}/>
                 <Route path={'/verify/*'} element={<Verify/>}>
