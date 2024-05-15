@@ -3,8 +3,8 @@ import {execSync, spawnSync} from 'node:child_process';
 const vars: Env = {
     REACT_APP_HEAD_HASH: head(),
     REACT_APP_API_BASE_URL: 'http://localhost:8080',
+    REACT_APP_BUILD_TIME: new Date().toString()
 };
-
 
 function head(): string | null {
     try {
@@ -16,7 +16,7 @@ function head(): string | null {
 }
 
 interface Env {
-    [key: string]: string;
+    [key: string]: string | null;
 }
 
 function main(): void {
