@@ -50,18 +50,18 @@ $bleeding: 50px;
   > .MuiPaper-root {
     overflow: visible;
     height: 42svh;
+    width: 100vw;
   }
 
   .puller {
     position: absolute;
-    right: 0;
-    left: 0;
+    width: 100vw;
     visibility: visible; // dementia²
     display: flex;
     justify-content: space-between;
     $pad: 5%;
     padding-left: $pad;
-    padding-right: $pad;
+    padding-right: calc($pad + 2%);
     align-items: center;
     // menu overrides
     border-bottom-right-radius: 0;

@@ -144,7 +144,11 @@ const themeOptions: CssVarsThemeOptions = {
             'Changa',
             'Arial',
             'sans-serif'
-        ].join(',')
+        ].join(','),
+        overline: {
+            fontSize: 16,
+            color: grey[400]
+        }
     }
 };
 

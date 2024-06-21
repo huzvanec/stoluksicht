@@ -5,15 +5,16 @@ import React, {useEffect, useState} from 'react';
 import {FieldValues, useForm} from 'react-hook-form';
 import {a} from '../../Router';
 import {currentLanguage} from '../../i18n';
-import {EmailField, LinkField, NameField, PasswordField} from '../../form';
+import {EmailField, LinkField, NameField, PasswordField} from '../../component/form';
 import useStolu from '../../provider/StoluProvider';
 import useApi from '../../provider/ApiProvider';
+import {Navigate} from 'react-router-dom';
 
 const verificationTime: number = 15 * 60; // seconds
 
 export const Register = () => {
     const {setLoading} = useStolu();
-    const {apiCall} = useApi();
+    const {apiCall, authenticated} = useApi();
     const [formData, setFormData] = useState<FieldValues>();
 
     const verifySend = async (data: FieldValues = formData as FieldValues): Promise<boolean> => {
@@ -27,7 +28,7 @@ export const Register = () => {
             language: currentLanguage()
         }));
         setLoading(false);
-        return (!!response && response.success);
+        return (response.state === 'success');
     };
 
     const submit = async (data: FieldValues): Promise<boolean> => {
@@ -37,14 +38,18 @@ export const Register = () => {
     };
 
 
-    return a(
-        <>
-            {(formData)
-                ? <VerifySendForm data={formData} verifySend={verifySend}/>
-                : <RegisterForm submit={submit}/>}
-        </>,
-        formData
-    );
+    if (authenticated) {
+        return (<Navigate to={'/'}/>);
+    } else {
+        return a(
+            <>
+                {(formData)
+                    ? <VerifySendForm data={formData} verifySend={verifySend}/>
+                    : <RegisterForm submit={submit}/>}
+            </>,
+            formData
+        );
+    }
 };
 
 interface VerifySendFormProps {

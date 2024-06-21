@@ -1,6 +1,14 @@
-import React, {createContext, PropsWithChildren, useContext, useEffect, useState} from 'react';
+import React, {
+    createContext,
+    Dispatch,
+    PropsWithChildren,
+    SetStateAction,
+    useContext,
+    useLayoutEffect,
+    useState
+} from 'react';
 import axios, {AxiosError, AxiosInstance, AxiosResponse} from 'axios';
-import useStolu, {Setter} from './StoluProvider';
+import useStolu from './StoluProvider';
 import {VariantType} from 'notistack';
 import {useTranslation} from 'react-i18next';
 
@@ -32,21 +40,23 @@ export interface ErrorResponse extends Response {
     };
 }
 
+export interface ApiResponse {
+    response?: Response,
+    state: ApiState
+}
+
 export type ApiProcess = (api: AxiosInstance) => Promise<AxiosResponse>;
-export type ApiCallFunction = (process: ApiProcess) => Promise<Response | null>;
+export type ApiCallFunction = (process: ApiProcess) => Promise<ApiResponse>;
+export type RequireAuthFunction = () => Promise<void>;
 
 interface ApiContextType {
     apiCall: ApiCallFunction;
     token: string | null;
-    setToken: Setter<string | null>;
+    setToken: Dispatch<SetStateAction<string | null>>;
+    authenticated: boolean;
 }
 
-export const ApiContext = createContext<ApiContextType>({
-    apiCall: () => Promise.resolve(null),
-    token: null,
-    setToken: () => {
-    }
-});
+export const ApiContext = createContext<ApiContextType>(null!);
 
 const useApi = () => useContext(ApiContext);
 export default useApi;
@@ -60,10 +70,13 @@ const api: AxiosInstance = axios.create({
     }
 });
 
+export type ApiState = 'success' | 'error' | 'processing';
+
 export const ApiProvider: React.FC<ApiProviderProps> = ({children}) => {
     const [token, setToken] = useState<string | null>(localStorage.getItem(tokenStorageKey));
     const {snack} = useStolu();
     const [t, i18n] = useTranslation();
+
     const errorSnack = (error: string, type: VariantType = 'error') => {
         if (!i18n.exists(error)) {
             snack(t('OTHER', {type: error}), type);
@@ -87,15 +100,15 @@ export const ApiProvider: React.FC<ApiProviderProps> = ({children}) => {
         localStorage.setItem(tokenStorageKey, token);
         setAxiosToken();
         const response = await apiCall(api => api.get('/test-auth'));
-        if (!response || !response.success) {
+        if (response.state === 'error') {
             console.debug('Token invalid, removing...');
-            setToken(null); // 1-deep recursion (calls useEffect)
+            setToken(null); // 1-deep recursion (calls useLayoutEffect)
             return;
         }
         console.debug('Token valid.');
     };
 
-    useEffect(() => {
+    useLayoutEffect(() => { // calls before render to prevent calling the api without token
         reloadToken();
     }, [token]);
 
@@ -104,17 +117,22 @@ export const ApiProvider: React.FC<ApiProviderProps> = ({children}) => {
             const response: AxiosResponse = await process(api);
             const data: AnyData = response.data;
             return {
-                timestamp: new Date(data.timestamp),
-                success: data.success,
-                endpoint: data.endpoint,
-                content: data.content ?? {}
+                state: 'success',
+                response: {
+                    timestamp: new Date(data.timestamp),
+                    success: data.success,
+                    endpoint: data.endpoint,
+                    content: data.content ?? {}
+                }
             };
         } catch (e_) {
             const error: AxiosError = e_ as AxiosError;
             console.debug(error);
             if (!error.response) {
                 errorSnack('CONNECTION');
-                return null;
+                return {
+                    state: 'error'
+                };
             }
             const data: AnyData = error.response.data as AnyData;
             if (data.error.type === 'AUTHENTICATION_INVALID') {
@@ -122,15 +140,24 @@ export const ApiProvider: React.FC<ApiProviderProps> = ({children}) => {
             }
             errorSnack(data.error.type);
             return {
-                timestamp: new Date(data.timestamp),
-                success: data.success,
-                endpoint: data.endpoint,
-                error: data.error
+                state: 'error',
+                response: {
+                    timestamp: new Date(data.timestamp),
+                    success: data.success,
+                    endpoint: data.endpoint,
+                    error: data.error
+                }
             };
         }
     };
 
-    const value: ApiContextType = {apiCall, token, setToken};
+    const value: ApiContextType = {
+        apiCall,
+        token,
+        setToken,
+        authenticated: !!token
+    };
+
     return (
         <ApiContext.Provider value={value}>
             {children}

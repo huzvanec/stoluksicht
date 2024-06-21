@@ -6,7 +6,7 @@ import {
     IconButton,
     IconButtonProps,
     Menu,
-    MenuItem,
+    MenuItem, ModalManager,
     PopoverOrigin,
     Select,
     SelectChangeEvent,
@@ -21,7 +21,7 @@ import {
     Zoom
 } from '@mui/material';
 import {NavLink, useLocation,} from 'react-router-dom';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './header.scss';
 import {Mode} from '@mui/system/cssVars/useCurrentColorScheme';
 import {useTranslation} from 'react-i18next';
@@ -68,7 +68,7 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({anchor, close, ...other}) => {
         setLoading(true);
         const response = await apiCall(api => api.post('/log-out'));
         setLoading(false);
-        if (!response || !response.success) return;
+        if (response.state !== 'success') return;
         setToken(null);
     };
 
@@ -194,7 +194,7 @@ const MobileDrawer: React.FC = () => {
         }
     };
     return (
-        <SwipeableDrawer className={'drawer'}
+        <SwipeableDrawer className={'drawer mui-fixed'}
                          open={open}
                          anchor={'bottom'}
                          onClose={() => setOpen(false)}
@@ -239,6 +239,15 @@ const ModeChanger: React.FC<ModeChangerProps> = ({tooltipProps, buttonProps}) =>
     const [t] = useTranslation();
     const {mode, setMode} = useColorScheme();
     const next: Mode = mode === 'light' ? 'dark' : 'light';
+    const changeMode = () => {
+        setMode(next);
+        document.documentElement.style.colorScheme = next;
+    };
+
+    useEffect(() => {
+        document.documentElement.style.colorScheme = mode as string;
+    }, []);
+
     return (
         <StoluTooltip {...tooltipProps}
                       title={t('changeMode', {mode: t(next)})}
@@ -248,7 +257,7 @@ const ModeChanger: React.FC<ModeChangerProps> = ({tooltipProps, buttonProps}) =>
                       arrow>
             <StoluIconButton {...buttonProps}
                              icon={'fa-solid fa-' + (mode === 'light' ? 'moon' : 'sun')}
-                             onClick={() => setMode(next)}
+                             onClick={changeMode}
                              className={'theme-changer'}/>
         </StoluTooltip>
     );

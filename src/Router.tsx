@@ -6,6 +6,9 @@ import {LogIn} from './routes/log-in/LogIn';
 import {Register} from './routes/register/Register';
 import {Verify} from './routes/verify/Verify';
 import {Menu} from './routes/menu/Menu';
+import Meal, {M} from './routes/meal/Meal';
+import NotFound from './routes/404/NotFound';
+import RequireAuth from './component/RequireAuth';
 
 // animation
 export const variants: Variants = {
@@ -57,11 +60,19 @@ export const AnimatedRoutes = () => {
                 <Route index element={a(<Home/>)}/>
                 <Route path={'/log-in'} element={a(<LogIn/>)}/>
                 <Route path={'/register'} element={a(<Register/>)}/>
-                <Route path={'/verify/*'} element={<Verify/>}>
+                <Route path={'/verify/*'}>
+                    <Route index element={<NotFound/>}/>
                     <Route path={':code'} element={<Verify/>}/>
-                    <Route index element={<Verify/>}/>
                 </Route>
-                <Route path={'/menu'} element={<Menu/>}/>
+                <Route path={'/meal/*'}>
+                    <Route index element={<NotFound/>}/>
+                    <Route path={':uuid'} element={<RequireAuth>{a(<Meal/>)}</RequireAuth>}/>
+                </Route>
+                <Route path={'/m/*'}>
+                    <Route index element={<NotFound/>}/>
+                    <Route path={':uuid'} element={<M/>}/>
+                </Route>
+                <Route path={'/menu'} element={a(<Menu/>)}/>
             </Routes>
         </AnimatePresence>
     );

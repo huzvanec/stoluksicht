@@ -3,16 +3,21 @@ import {Box, Button, Typography} from '@mui/material';
 import {useTranslation} from 'react-i18next';
 import React from 'react';
 import {FieldValues, useForm} from 'react-hook-form';
-import {EmailField, LinkField, PasswordField} from '../../form';
-import {NavigateFunction, useNavigate} from 'react-router-dom';
+import {EmailField, LinkField, PasswordField} from '../../component/form';
+import {Navigate, NavigateFunction, useNavigate, useSearchParams} from 'react-router-dom';
 import useStolu from '../../provider/StoluProvider';
 import useApi, {AnyData, SuccessResponse} from '../../provider/ApiProvider';
 import bear from '../../media/bear.mp4';
 
+export const returnUrlQuery: string = 'return';
+
 export const LogIn = () => {
     const navigate: NavigateFunction = useNavigate();
     const {setLoading} = useStolu();
-    const {apiCall, setToken} = useApi();
+    const {apiCall, setToken, authenticated} = useApi();
+    const [searchParams] = useSearchParams();
+
+    const returnPath: string = '/' + (searchParams.has(returnUrlQuery) ? searchParams.get(returnUrlQuery) : '');
 
     const logIn = async (data: FieldValues): Promise<boolean> => {
         setLoading(true);
@@ -23,10 +28,10 @@ export const LogIn = () => {
             password: data.password
         }));
         setLoading(false);
-        if (!response || !response.success) return false;
-        const content: AnyData = (response as SuccessResponse).content;
+        if (response.state !== 'success') return false;
+        const content: AnyData = (response.response as SuccessResponse).content;
         setToken(content.session.token);
-        navigate('/');
+        navigate(returnPath);
         return true;
     };
 
@@ -41,26 +46,29 @@ export const LogIn = () => {
 
     const [t, i18n] = useTranslation();
     i18n.on('languageChanged', () => clearErrors());
-
-    return (
-        <Box className={'log-in-form form menu'}
-             component={'form'}
-             onSubmit={handleSubmit(logIn)}>
-            <Typography variant={'h4'} className={'title'}>
-                {t('logIn')}
-            </Typography>
-            <EmailField errors={errors} register={register}/>
-            <PasswordField errors={errors} register={register}/>
-            <Button type={'submit'}
-                    fullWidth
-                    variant={'contained'}>
-                {t('logIn')}
-            </Button>
-            <LinkField to={'/register'}
-                       text={t('dontHaveAccount')}/>
-            <LinkField target={'_blank'}
-                       to={bear}
-                       text={t('forgottenPassword')}/>
-        </Box>
-    );
+    if (authenticated) {
+        return (<Navigate to={'/'}/>);
+    } else {
+        return (
+            <Box className={'log-in-form form menu'}
+                 component={'form'}
+                 onSubmit={handleSubmit(logIn)}>
+                <Typography variant={'h4'} className={'title'}>
+                    {t('logIn')}
+                </Typography>
+                <EmailField errors={errors} register={register}/>
+                <PasswordField errors={errors} register={register}/>
+                <Button type={'submit'}
+                        fullWidth
+                        variant={'contained'}>
+                    {t('logIn')}
+                </Button>
+                <LinkField to={'/register'}
+                           text={t('dontHaveAccount')}/>
+                <LinkField target={'_blank'}
+                           to={bear}
+                           text={t('forgottenPassword')}/>
+            </Box>
+        );
+    }
 };

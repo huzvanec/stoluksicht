@@ -1,9 +1,10 @@
-import React from 'react';
-import {Box, Rating, Typography} from '@mui/material';
+import React, {useState} from 'react';
+import {Box, Grow, Modal, Rating, Typography} from '@mui/material';
 import {useTranslation} from 'react-i18next';
 import './menu.scss';
 import useStolu from '../../provider/StoluProvider';
-import {StoluTooltip} from '../../header/Header';
+import {StoluIconButton, StoluTooltip} from '../../header/Header';
+import {useNavigate} from 'react-router-dom';
 
 const weekdayFormatter = new Intl.DateTimeFormat('en-US', {weekday: 'long'});
 
@@ -46,31 +47,36 @@ const MenuDay: React.FC<MenuDayProps> = ({date}) => {
                 {' '}
                 {formatDate(date)}
             </Typography>
-            <Meal course={'soup'}
+            <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
+                  course={'soup'}
                   courseNumber={null}
                   description={null}
                   name={'Krémová s vločkami na želé'}
                   globalRating={null}
                   userRating={null}/>
-            <Meal course={'main'}
+            <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
+                  course={'main'}
                   courseNumber={1}
                   description={null}
                   name={'Řízel'}
                   globalRating={null}
                   userRating={null}/>
-            <Meal course={'main'}
+            <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
+                  course={'main'}
                   courseNumber={2}
                   description={null}
                   name={'Řízel'}
                   globalRating={null}
                   userRating={null}/>
-            <Meal course={'main'}
+            <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
+                  course={'main'}
                   courseNumber={3}
                   description={null}
                   name={'Řízel'}
                   globalRating={null}
                   userRating={null}/>
-            <Meal course={'addition'}
+            <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
+                  course={'addition'}
                   courseNumber={null}
                   description={null}
                   name={'Yum'}
@@ -83,6 +89,7 @@ const MenuDay: React.FC<MenuDayProps> = ({date}) => {
 type Course = 'soup' | 'main' | 'addition';
 
 interface MealProps {
+    uuid: string,
     course: Course;
     courseNumber: number | null;
     name: string;
@@ -113,6 +120,7 @@ const MealRating: React.FC<MealRatingProps> = ({icon, rating, className, tooltip
 };
 
 const Meal: React.FC<MealProps> = ({
+                                       uuid,
                                        course,
                                        courseNumber,
                                        name,
@@ -122,11 +130,23 @@ const Meal: React.FC<MealProps> = ({
                                    }) => {
     const [t] = useTranslation();
     const type = courseNumber ?? t(course);
+    const navigate = useNavigate();
+
+    const handleOpen = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+        if (!(event.target as HTMLElement).classList.contains('meal-opener')) return;
+        navigate('/meal/' + uuid);
+    };
+
     return (
-        <Box className={'meal'}>
-            <Typography className={'type'} variant={'h6'}>{type}</Typography>
-            <Typography className={'name'}>{name}</Typography>
-            <Box className={'rating-box'}>
+        <Box className={'meal meal-opener'} onClick={handleOpen}>
+            <Typography className={'type meal-opener'}
+                        variant={'h6'}>
+                {type}
+            </Typography>
+            <Typography className={'name meal-opener'}>
+                {name}
+            </Typography>
+            <Box className={'rating-box meal-opener'}>
                 {/*<Rating icon={<i className={'fa-solid fa-utensils'}/>}/>*/}
                 <Rating/>
                 <Box className={'ratings'}>

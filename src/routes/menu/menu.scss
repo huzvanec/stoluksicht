@@ -27,6 +27,7 @@
         gap: 12px;
         background-color: color-mix(in srgb, var(--mui-palette-background-paper), transparent 40%);
         border-radius: 15px;
+        cursor: pointer;
 
         .type {
           width: 80px;
@@ -71,6 +72,29 @@
           }
         }
       }
+    }
+  }
+}
+
+.meal-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100svw;
+
+  .meal-detail {
+    outline: none;
+    width: 90%;
+    max-width: 50rem;
+    height: 80%;
+    max-height: 20rem;
+    padding: 10px;
+
+    .close-btn {
+      float: right;
+      height: 40px;
+      width: 40px;
     }
   }
 }

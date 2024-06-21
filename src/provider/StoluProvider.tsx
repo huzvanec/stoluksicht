@@ -1,15 +1,14 @@
 import {useSnackbar, VariantType} from 'notistack';
-import React, {createContext, PropsWithChildren, useContext, useState} from 'react';
+import React, {createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Box, CircularProgress} from '@mui/material';
 import {Renderer} from '../index';
 
-export type Setter<T> = (value: T) => void;
 export type SnackFunction = (message: string, type?: VariantType) => void;
 
 interface StoluContextType {
     loading: boolean;
-    setLoading: Setter<boolean>;
+    setLoading: Dispatch<SetStateAction<boolean>>;
     snack: SnackFunction;
     mobile: boolean;
 }

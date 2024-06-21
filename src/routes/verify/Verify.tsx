@@ -4,14 +4,14 @@ import {Box, Button, Typography} from '@mui/material';
 import {useTranslation} from 'react-i18next';
 import './verify.scss';
 import useStolu from '../../provider/StoluProvider';
-import useApi from '../../provider/ApiProvider';
+import useApi, {ApiState} from '../../provider/ApiProvider';
 
 export const Verify: React.FC = () => {
     const [t] = useTranslation();
     const {code} = useParams<{ code: string }>();
     const {setLoading} = useStolu();
     const {apiCall} = useApi();
-    const [verifyState, setVerifyState] = useState<'success' | 'error' | 'verifying'>('verifying');
+    const [apiState, setApiState] = useState<ApiState>('processing');
 
     const verify = async (code: string) => {
         setLoading(true);
@@ -19,7 +19,7 @@ export const Verify: React.FC = () => {
             {
                 code: code
             }));
-        setVerifyState(!!response && response.success ? 'success' : 'error');
+        setApiState(response.state);
         setLoading(false);
     };
 
@@ -27,18 +27,18 @@ export const Verify: React.FC = () => {
         if (code) {
             verify(code);
         } else {
-            setVerifyState('error');
+            setApiState('error');
         }
     }, []);
 
     let tTitle: string;
     let tInfo: string;
-    switch (verifyState) {
+    switch (apiState) {
         case 'success':
             tTitle = 'verifySuccess';
             tInfo = 'verifySuccessInfo';
             break;
-        case 'verifying':
+        case 'processing':
             tTitle = 'verifyProgress';
             tInfo = 'verifyProgressInfo';
             break;
@@ -49,7 +49,7 @@ export const Verify: React.FC = () => {
     }
 
     const renderButton = (): React.JSX.Element | null => {
-        switch (verifyState) {
+        switch (apiState) {
             case 'success':
                 return (
                     <Button component={NavLink}
