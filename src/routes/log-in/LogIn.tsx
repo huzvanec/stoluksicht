@@ -1,12 +1,13 @@
 import './logIn.scss';
 import {Box, Button, Typography} from '@mui/material';
 import {useTranslation} from 'react-i18next';
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {FieldValues, useForm} from 'react-hook-form';
 import {EmailField, LinkField, PasswordField} from '../../component/form';
 import {Navigate, NavigateFunction, useNavigate, useSearchParams} from 'react-router-dom';
 import useStolu from '../../provider/StoluProvider';
 import useApi, {AnyData, SuccessResponse} from '../../provider/ApiProvider';
+// @ts-ignore
 import bear from '../../media/bear.mp4';
 
 export const returnUrlQuery: string = 'return';
@@ -15,7 +16,9 @@ export const LogIn = () => {
     const navigate: NavigateFunction = useNavigate();
     const {setLoading} = useStolu();
     const {apiCall, setToken, authenticated} = useApi();
+    const [authenticatedInitial] = useState<boolean>(useRef(authenticated).current);
     const [searchParams] = useSearchParams();
+
 
     const returnPath: string = '/' + (searchParams.has(returnUrlQuery) ? searchParams.get(returnUrlQuery) : '');
 
@@ -46,7 +49,7 @@ export const LogIn = () => {
 
     const [t, i18n] = useTranslation();
     i18n.on('languageChanged', () => clearErrors());
-    if (authenticated) {
+    if (authenticatedInitial) {
         return (<Navigate to={'/'}/>);
     } else {
         return (

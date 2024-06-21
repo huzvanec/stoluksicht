@@ -51,7 +51,8 @@ export const AnimatedRoutes = () => {
     const location = useLocation();
 
     useEffect(() => {
-        window.scroll({top: 0, behavior: 'smooth'});
+        const behavior: ScrollBehavior = location.pathname.startsWith('/meal') ? 'auto' : 'smooth';
+        window.scroll({top: 0, behavior: behavior});
     }, [location]);
 
     return (
@@ -72,7 +73,7 @@ export const AnimatedRoutes = () => {
                     <Route index element={<NotFound/>}/>
                     <Route path={':uuid'} element={<M/>}/>
                 </Route>
-                <Route path={'/menu'} element={a(<Menu/>)}/>
+                <Route path={'/menu'} element={<RequireAuth>{a(<Menu/>)}</RequireAuth>}/>
             </Routes>
         </AnimatePresence>
     );

@@ -6,7 +6,7 @@ import {
     IconButton,
     IconButtonProps,
     Menu,
-    MenuItem, ModalManager,
+    MenuItem,
     PopoverOrigin,
     Select,
     SelectChangeEvent,
@@ -70,6 +70,8 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({anchor, close, ...other}) => {
         setLoading(false);
         if (response.state !== 'success') return;
         setToken(null);
+        // TODO reloads the tab, but using navigate() does not work because of a hook on token in RequireAuth
+        window.location.replace('/');
     };
 
     return (
@@ -88,9 +90,9 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({anchor, close, ...other}) => {
 
 const DesktopBar: React.FC = () => {
     const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
-    const {token} = useApi();
+    const {authenticated} = useApi();
     const renderProfile = (): React.JSX.Element => {
-        if (token) {
+        if (authenticated) {
             return (
                 <>
                     <ProfileButton open={!!menuAnchor}
@@ -144,12 +146,12 @@ const MobileDrawer: React.FC = () => {
     const [t] = useTranslation();
     const [open, setOpen] = useState<boolean>(false);
 
-    const {token} = useApi();
+    const {authenticated} = useApi();
 
     const close = () => setOpen(false);
 
     const renderProfile: Renderer = (): React.JSX.Element => {
-        if (token) {
+        if (authenticated) {
             return (
                 <ProfileMenu anchor={menuAnchor}
                              close={closeMenu}
@@ -176,7 +178,7 @@ const MobileDrawer: React.FC = () => {
     };
 
     const renderRight: Renderer = () => {
-        if (token) {
+        if (authenticated) {
             return (
                 <>
                     <ProfileButton open={!!buttonMenuAnchor}
@@ -206,7 +208,7 @@ const MobileDrawer: React.FC = () => {
                  sx={{top: -(bleeding), height: `calc(${bleeding}px + .1svh)`}}>
                 <StoluIconButton icon={'fa-solid fa-user'}
                                  onClick={openMenu}
-                                 sx={{color: token ? 'var(--mui-palette-primary-main)' : undefined}}
+                                 sx={{color: authenticated ? 'var(--mui-palette-primary-main)' : undefined}}
                                  className={'avatar'}/>
                 {renderProfile()}
                 <Box className={'notch'}/>
