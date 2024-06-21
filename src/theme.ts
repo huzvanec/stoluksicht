@@ -147,7 +147,7 @@ const themeOptions: CssVarsThemeOptions = {
         ].join(','),
         overline: {
             fontSize: 16,
-            color: grey[400]
+            color: grey[300]
         }
     }
 };
