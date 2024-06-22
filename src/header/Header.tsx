@@ -241,14 +241,10 @@ const ModeChanger: React.FC<ModeChangerProps> = ({tooltipProps, buttonProps}) =>
     const [t] = useTranslation();
     const {mode, setMode} = useColorScheme();
     const next: Mode = mode === 'light' ? 'dark' : 'light';
-    const changeMode = () => {
-        setMode(next);
-        document.documentElement.style.colorScheme = next;
-    };
 
     useEffect(() => {
         document.documentElement.style.colorScheme = mode as string;
-    }, []);
+    }, [mode]);
 
     return (
         <StoluTooltip {...tooltipProps}
@@ -259,7 +255,7 @@ const ModeChanger: React.FC<ModeChangerProps> = ({tooltipProps, buttonProps}) =>
                       arrow>
             <StoluIconButton {...buttonProps}
                              icon={'fa-solid fa-' + (mode === 'light' ? 'moon' : 'sun')}
-                             onClick={changeMode}
+                             onClick={() => setMode(next)}
                              className={'theme-changer'}/>
         </StoluTooltip>
     );

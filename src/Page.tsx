@@ -22,9 +22,9 @@ export const Page = () => {
 
     const isMobile = (): boolean => window.innerWidth <= 1000;
     const [mobile, setMobile] = useState<boolean>(isMobile());
-    const onWindowResize = (): void => setMobile(isMobile());
 
     useEffect(() => {
+        const onWindowResize = (): void => setMobile(isMobile());
         window.addEventListener('resize', onWindowResize);
         return () => {
             window.removeEventListener('resize', onWindowResize);
