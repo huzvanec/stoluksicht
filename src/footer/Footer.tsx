@@ -67,7 +67,7 @@ export const Footer = () => {
                 <Typography variant={'subtitle2'}>
                     <Link
                         href={headHash
-                            ? `https://github.com/Mandlemankiller/stoluksicht/tree/${headHash}`
+                            ? `https://github.com/Mandlemankiller/stoluksicht/commit/${headHash}`
                             : undefined}
                         target={'_blank'}>
                         stoluksicht/master@{headHash ?? 'development'}
