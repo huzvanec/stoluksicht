@@ -1,8 +1,7 @@
 import {useSnackbar, VariantType} from 'notistack';
 import React, {createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Box, CircularProgress} from '@mui/material';
-import {Renderer} from '../main.tsx';
+import Loading from '../component/Loading.tsx';
 
 export type SnackFunction = (message: string, type?: VariantType) => void;
 
@@ -49,15 +48,6 @@ export const StoluProvider: React.FC<StoluProviderProps> = ({children, mobile}) 
     //     snack(t(message), type);
     // };
 
-    const renderLoading: Renderer = () => {
-        if (!loading) return;
-        return (
-            <Box className={'loading'}>
-                <CircularProgress/>
-            </Box>
-        );
-    };
-
     const value: StoluContextType = {loading, setLoading, snack, mobile};
 
     return (
@@ -65,7 +55,7 @@ export const StoluProvider: React.FC<StoluProviderProps> = ({children, mobile}) 
             <StoluContext.Provider value={value}>
                 {children}
             </StoluContext.Provider>
-            {renderLoading()}
+            {(loading) ? <Loading/> : undefined}
         </>
     );
 };
