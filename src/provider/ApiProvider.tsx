@@ -11,8 +11,8 @@ import axios, {AxiosError, AxiosInstance, AxiosResponse} from 'axios';
 import useStolu from './StoluProvider';
 import {VariantType} from 'notistack';
 import {useTranslation} from 'react-i18next';
+import {apiBaseUrl} from './process.ts';
 
-export const apiBaseUrl: string = process.env.REACT_APP_API_BASE_URL as string;
 export const tokenStorageKey: string = 'token';
 
 export interface AnyData {
@@ -47,7 +47,6 @@ export interface ApiResponse {
 
 export type ApiProcess = (api: AxiosInstance) => Promise<AxiosResponse>;
 export type ApiCallFunction = (process: ApiProcess) => Promise<ApiResponse>;
-export type RequireAuthFunction = () => Promise<void>;
 
 interface ApiContextType {
     apiCall: ApiCallFunction;
@@ -61,7 +60,7 @@ export const ApiContext = createContext<ApiContextType>(null!);
 const useApi = () => useContext(ApiContext);
 export default useApi;
 
-export type ApiProviderProps = PropsWithChildren & {}
+export type ApiProviderProps = PropsWithChildren
 
 const api: AxiosInstance = axios.create({
     baseURL: apiBaseUrl,

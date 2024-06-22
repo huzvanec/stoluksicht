@@ -1,11 +1,9 @@
 import {Link, LinkProps, MenuItem, Select, TextField, TextFieldProps} from '@mui/material';
-import {RegisterOptions} from 'react-hook-form/dist/types/validator';
-import {FieldErrors} from 'react-hook-form/dist/types/errors';
-import {UseFormRegister} from 'react-hook-form/dist/types/form';
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {validate as validateEmail} from 'email-validator';
 import {NavLink} from 'react-router-dom';
+import {FieldErrors, RegisterOptions, UseFormRegister} from 'react-hook-form';
 
 export type ValidatedTextFieldProps = TextFieldProps & {
     field: string;
@@ -28,26 +26,25 @@ export const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
                                                                           options = {},
                                                                           errors,
                                                                           register,
-                                                                          id,
                                                                           required,
                                                                           minLength,
                                                                           maxLength,
                                                                           pattern,
                                                                           ...other
                                                                       }) => {
-    const [tr] = useTranslation();
+    const [t] = useTranslation();
     if (minLength) options.minLength = {
         value: minLength,
-        message: tr('short', {what: tr(field), length: minLength})
+        message: t('short', {what: t(field), length: minLength})
     };
     if (maxLength) options.maxLength = {
         value: maxLength,
-        message: tr('long', {what: tr(field), length: maxLength})
+        message: t('long', {what: t(field), length: maxLength})
     };
-    if (required) options.required = tr('fieldRequired');
+    if (required) options.required = t('fieldRequired');
     if (pattern) options.pattern = {
         value: pattern,
-        message: tr(field + 'Invalid')
+        message: t(field + 'Invalid')
     };
     return (
         <TextField
@@ -102,7 +99,7 @@ export const EmailField: React.FC<TextFieldChildProps> = ({register, ...other}) 
                     className={'email-suffix'}
                     fullWidth
                     {...register('emailSuffix')}
-                    onChange={(event) => setEmailSuffix(event.target.value)}>
+                    onChange={(event) => setEmailSuffix(event.target.value as string)}>
                 {emailSuffixes.map(suffix => <MenuItem key={suffix} value={suffix}>{suffix}</MenuItem>)}
             </Select>
         </>

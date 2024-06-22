@@ -74,6 +74,7 @@ export const AnimatedRoutes = () => {
                     <Route path={':uuid'} element={<M/>}/>
                 </Route>
                 <Route path={'/menu'} element={<RequireAuth>{a(<Menu/>)}</RequireAuth>}/>
+                <Route path={'/*'} element={<NotFound/>}/>
             </Routes>
         </AnimatePresence>
     );

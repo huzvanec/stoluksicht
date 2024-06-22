@@ -29,7 +29,7 @@ import {currentLanguage} from '../i18n';
 import {TabsProps} from '@mui/material/Tabs/Tabs';
 import {ArrowDropDown} from '@mui/icons-material';
 import useStolu from '../provider/StoluProvider';
-import {Renderer} from '../index';
+import {Renderer} from '../main.tsx';
 import useApi from '../provider/ApiProvider';
 
 interface TabItem {

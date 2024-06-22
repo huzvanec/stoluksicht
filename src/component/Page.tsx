@@ -1,19 +1,19 @@
-import {Header} from './header/Header';
+import {Header} from '../header/Header.tsx';
 import {BrowserRouter as Router} from 'react-router-dom';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
     CssBaseline,
     Experimental_CssVarsProvider as CssVarsProvider,
     experimental_extendTheme as extendTheme,
     StyledEngineProvider
 } from '@mui/material';
-import themeOptions from './theme';
-import {AnimatedRoutes} from './Router';
+import themeOptions from '../theme.ts';
+import {AnimatedRoutes} from '../Router.tsx';
 import {SnackbarProvider} from 'notistack';
 import {useTranslation} from 'react-i18next';
-import {StoluProvider} from './provider/StoluProvider';
-import {ApiProvider} from './provider/ApiProvider';
-import {Footer} from './footer/Footer';
+import {StoluProvider} from '../provider/StoluProvider.tsx';
+import {ApiProvider} from '../provider/ApiProvider.tsx';
+import {Footer} from '../footer/Footer.tsx';
 
 const consoleWarning: boolean = false;
 

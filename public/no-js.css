@@ -1,4 +1,4 @@
-.nojs {
+.no-js {
     color: red;
     position: absolute;
     left: 0;
@@ -13,13 +13,13 @@
     flex-direction: column;
 }
 
-.nojs .sepa {
+.no-js .sepa {
     width: 85%;
     height: 2px;
     background-color: red;
     border-radius: 15px;
 }
 
-body:has(.nojs) {
+body:has(.no-js) {
     background-color: black;
 }

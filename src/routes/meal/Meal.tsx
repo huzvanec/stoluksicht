@@ -7,7 +7,7 @@ import {useTranslation} from 'react-i18next';
 import {StoluIconButton, StoluTooltip} from '../../header/Header';
 import {Helmet} from 'react-helmet';
 import NotFound from '../404/NotFound';
-import {Renderer} from '../../index';
+import {Renderer} from '../../main.tsx';
 import {grey} from '@mui/material/colors';
 
 type Description = string | null;
@@ -79,7 +79,7 @@ const Meal = () => {
                 <Box className={'meal-profile menu'}>
                     <Box className={'top'}>
                         <Typography typography={'h6'}>
-                            {!!mealData ? t(mealData.course.toLowerCase()) : <Skeleton/>}
+                            {mealData ? t(mealData.course.toLowerCase()) : <Skeleton/>}
                         </Typography>
                         <Box className={'toolbar'}>
                             <StoluTooltip title={'uwiu'}>
@@ -88,7 +88,7 @@ const Meal = () => {
                         </Box>
                     </Box>
                     <Typography typography={'h4'} className={'name'}>
-                        {!!mealData ? mealData.mealNames[0] : <Skeleton/>}
+                        {mealData ? mealData.mealNames[0] : <Skeleton/>}
                     </Typography>
                     <Typography typography={'overline'}>{t('description')}</Typography>
                     {mealDescription()}

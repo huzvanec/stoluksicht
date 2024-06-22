@@ -3,10 +3,7 @@ import {Box, Divider, Link, Typography} from '@mui/material';
 import {Trans, useTranslation} from 'react-i18next';
 import useStolu from '../provider/StoluProvider';
 import {bleeding} from '../header/Header';
-import React from 'react';
-
-const headHash: string | undefined = process.env.REACT_APP_HEAD_HASH;
-const buildTime: string | undefined = process.env.REACT_APP_BUILD_TIME;
+import {buildTime, headHash} from '../provider/process.ts';
 
 const formatDate = (date: Date): string => {
     const year = date.getFullYear();

@@ -1,15 +1,11 @@
 import ReactDOM from 'react-dom/client';
-import './index.scss';
-import {Page} from './Page';
+import './main.scss';
+import {Page} from './component/Page.tsx';
 import '@fontsource/changa';
 import './i18n';
 import React from 'react';
 
-const root: ReactDOM.Root = ReactDOM.createRoot(
-    document.getElementById('root') as HTMLElement
-);
-
-root.render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
     <Page/>
 );
 

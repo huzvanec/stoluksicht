@@ -5,6 +5,7 @@ import './menu.scss';
 import useStolu from '../../provider/StoluProvider';
 import {StoluTooltip} from '../../header/Header';
 import {useNavigate} from 'react-router-dom';
+import {grey} from '@mui/material/colors';
 
 const weekdayFormatter = new Intl.DateTimeFormat('en-US', {weekday: 'long'});
 
@@ -50,35 +51,30 @@ const MenuDay: React.FC<MenuDayProps> = ({date}) => {
             <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
                   course={'soup'}
                   courseNumber={null}
-                  description={null}
                   name={'Krémová s vločkami na želé'}
                   globalRating={null}
                   userRating={null}/>
             <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
                   course={'main'}
                   courseNumber={1}
-                  description={null}
                   name={'Řízel'}
                   globalRating={null}
                   userRating={null}/>
             <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
                   course={'main'}
                   courseNumber={2}
-                  description={null}
                   name={'Řízel'}
                   globalRating={null}
                   userRating={null}/>
             <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
                   course={'main'}
                   courseNumber={3}
-                  description={null}
                   name={'Řízel'}
                   globalRating={null}
                   userRating={null}/>
             <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
                   course={'addition'}
                   courseNumber={null}
-                  description={null}
                   name={'Yum'}
                   globalRating={null}
                   userRating={null}/>
@@ -93,14 +89,13 @@ interface MealProps {
     course: Course;
     courseNumber: number | null;
     name: string;
-    description: string | null;
     userRating: number | null;
     globalRating: number | null;
 }
 
 interface MealRatingProps {
     icon: string;
-    rating: number;
+    rating: number | null;
     className?: string;
     tooltip: string;
 }
@@ -112,7 +107,7 @@ const MealRating: React.FC<MealRatingProps> = ({icon, rating, className, tooltip
                       enterTouchDelay={0}>
             <span className={'rating ' + (className ?? '')}>
                 <i className={'rating-icon ' + icon}/>
-                {rating}
+                {rating ?? <Typography sx={{color: grey[400]}}>???</Typography>}
                 <i className={'rating-star fa-solid fa-star'}/>
             </span>
         </StoluTooltip>
@@ -124,7 +119,6 @@ const Meal: React.FC<MealProps> = ({
                                        course,
                                        courseNumber,
                                        name,
-                                       description,
                                        userRating,
                                        globalRating
                                    }) => {
@@ -150,8 +144,8 @@ const Meal: React.FC<MealProps> = ({
                 {/*<Rating icon={<i className={'fa-solid fa-utensils'}/>}/>*/}
                 <Rating/>
                 <Box className={'ratings'}>
-                    <MealRating rating={4.4} icon={'fa-solid fa-user'} tooltip={t('personalRating')}/>
-                    <MealRating rating={3.4} icon={'fa-solid fa-users'} tooltip={t('globalRating')}/>
+                    <MealRating rating={userRating} icon={'fa-solid fa-user'} tooltip={t('personalRating')}/>
+                    <MealRating rating={globalRating} icon={'fa-solid fa-users'} tooltip={t('globalRating')}/>
                 </Box>
             </Box>
         </Box>

@@ -2,7 +2,7 @@ import {useSnackbar, VariantType} from 'notistack';
 import React, {createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Box, CircularProgress} from '@mui/material';
-import {Renderer} from '../index';
+import {Renderer} from '../main.tsx';
 
 export type SnackFunction = (message: string, type?: VariantType) => void;
 

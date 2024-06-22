@@ -1,5 +1,4 @@
 import './home.scss';
-import React from 'react';
 import Logo from './Logo.svg';
 
 export const Home = () => {

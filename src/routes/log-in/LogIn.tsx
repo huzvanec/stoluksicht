@@ -7,12 +7,11 @@ import {EmailField, LinkField, PasswordField} from '../../component/form';
 import {Navigate, NavigateFunction, useNavigate, useSearchParams} from 'react-router-dom';
 import useStolu from '../../provider/StoluProvider';
 import useApi, {AnyData, SuccessResponse} from '../../provider/ApiProvider';
-// @ts-ignore
 import bear from '../../media/bear.mp4';
 
 export const returnUrlQuery: string = 'return';
 
-export const LogIn = () => {
+export const LogIn: React.FC = () => {
     const navigate: NavigateFunction = useNavigate();
     const {setLoading} = useStolu();
     const {apiCall, setToken, authenticated} = useApi();
