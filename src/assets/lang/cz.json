@@ -23,6 +23,7 @@
   "OTHER": "Došlo k neznámé chybě: {{type}}",
   "UNKNOWN": "Došlo k neznámé chybě!",
   "NAME_NOT_UNIQUE": "Toto jméno je již zabrané jiným uživatelem!",
+  "MEAL_UUID_INVALID": "Jídlo nenalezeno!",
   "_SENDING_VERIFICATION_EMAIL": null,
   "verifySend": "Ověření",
   "verifyInfo": "Na tvoji e-mailovou adresu jsme zaslali ověřovací e-mail. Kliknutím na odkaz v e-mailu ověříš svůj účet.",
@@ -70,7 +71,8 @@
   "_MEAL_PROFILE": null,
   "description": "Popis",
   "rating": "Hodnocení",
-  "MEAL_UUID_INVALID": "Jídlo nenalezeno!",
   "main": "Hlavní jídlo",
-  "noDescription": "Popis pro tohle jídlo bohužel nemáme."
+  "noDescription": "Popis pro tohle jídlo bohužel nemáme.",
+  "copyMealLink": "Zkopírovat odkaz na jídlo",
+  "linkCopied": "Odkaz zkopírován do schránky!"
 }

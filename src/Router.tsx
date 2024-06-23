@@ -41,7 +41,7 @@ export const animation: MotionProps & HTMLAttributes<any> = {
 // animation wrapper
 export const a = (child: React.JSX.Element, state?: any): React.JSX.Element => {
     return (
-        <motion.div key={state} {...animation} style={{position: 'absolute'}}>
+        <motion.div key={state} {...animation}>
             {child}
         </motion.div>
     );

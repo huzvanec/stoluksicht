@@ -23,6 +23,7 @@
   "OTHER": "An unknown error occurred: {{type}}",
   "UNKNOWN": "An unknown error occurred!",
   "NAME_NOT_UNIQUE": "This name is already taken by another user!",
+  "MEAL_UUID_INVALID": "Meal not found!",
   "_SENDING_VERIFICATION_EMAIL": null,
   "verifySend": "Verification",
   "verifyInfo": "We have sent a verification email to your email address. Click the link in the email to verify your account.",
@@ -70,7 +71,8 @@
   "_MEAL_PROFILE": null,
   "description": "Description",
   "rating": "Rating",
-  "MEAL_UUID_INVALID": "Meal not found!",
   "main": "Main meal",
-  "noDescription": "Unfortunately, we do not have a description for this meal."
+  "noDescription": "Unfortunately, we do not have a description for this meal.",
+  "copyMealLink": "Copy link to meal",
+  "linkCopied": "Link copied to clipboard!"
 }

@@ -9,6 +9,7 @@ import {Helmet} from 'react-helmet';
 import NotFound from '../404/NotFound';
 import {Renderer} from '../../main.tsx';
 import {grey} from '@mui/material/colors';
+import useStolu from '../../provider/StoluProvider.tsx';
 
 type Description = string | null;
 
@@ -24,15 +25,15 @@ interface MealData {
 const Meal = () => {
     const {apiCall} = useApi();
 
-    const {uuid: mealUuid} = useParams<{ uuid: string }>();
-
+    const {uuid} = useParams<{ uuid: string }>();
     const [notFound, setNotFound] = useState<boolean>(false);
     const [mealData, setMealData] = useState<MealData | undefined>();
     const [t] = useTranslation();
+    const {snack} = useStolu();
 
 
     const loadMeal = async () => {
-        const response = await apiCall(api => api.get('/meal/' + mealUuid));
+        const response = await apiCall(api => api.get('/meal/' + uuid));
         if (response.state === 'error') {
             const errorType: string = (response.response as ErrorResponse).error.type;
             if (errorType === 'MEAL_UUID_INVALID') setNotFound(true);
@@ -46,6 +47,13 @@ const Meal = () => {
             mealNames: data.names,
             photoUuids: data.photos
         });
+    };
+
+    const copyShortLink = () => {
+        const shortUuid: string = uuid!.replace(/-/g, '');
+        const shortLink: string = `${window.location.host}/m/${shortUuid}`;
+        navigator.clipboard.writeText(shortLink);
+        snack(t('linkCopied'), 'success');
     };
 
     useEffect(() => {
@@ -82,8 +90,10 @@ const Meal = () => {
                             {mealData ? t(mealData.course.toLowerCase()) : <Skeleton/>}
                         </Typography>
                         <Box className={'toolbar'}>
-                            <StoluTooltip title={'uwiu'}>
-                                <StoluIconButton icon={'fa-solid fa-link'} className={'action'}/>
+                            <StoluTooltip title={t('copyMealLink')}>
+                                <StoluIconButton icon={'fa-solid fa-link'}
+                                                 className={'action'}
+                                                 onClick={copyShortLink}/>
                             </StoluTooltip>
                         </Box>
                     </Box>
