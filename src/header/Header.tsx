@@ -279,8 +279,8 @@ const LanguageSelector: React.FC<SelectProps> = (_onChange, {className, ...other
                 MenuProps={{disableScrollLock: true}}
                 onChange={changeLanguage}
                 {...other}>
-            <MenuItem value={'en'}>🇬🇧 EN</MenuItem>
-            <MenuItem value={'cz'}>🇨🇿 CZ</MenuItem>
+            <MenuItem value={'en'}>&#127468;&#127463; EN</MenuItem>
+            <MenuItem value={'cz'}>&#127464;&#127487; CZ</MenuItem>
         </Select>
     );
 };
