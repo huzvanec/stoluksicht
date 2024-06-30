@@ -130,7 +130,7 @@ const themeOptions: CssVarsThemeOptions = {
                 text: {
                     primary: '#fff',
                     secondary: grey[200],
-                    disabled: grey[500]
+                    disabled: grey[500],
                 },
                 background: {
                     default: '#1C1E2A',
@@ -145,10 +145,6 @@ const themeOptions: CssVarsThemeOptions = {
             'Arial',
             'sans-serif'
         ].join(','),
-        overline: {
-            fontSize: 16,
-            color: grey[300]
-        }
     }
 };
 

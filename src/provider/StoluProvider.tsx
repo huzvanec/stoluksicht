@@ -55,7 +55,7 @@ export const StoluProvider: React.FC<StoluProviderProps> = ({children, mobile}) 
             <StoluContext.Provider value={value}>
                 {children}
             </StoluContext.Provider>
-            {(loading) ? <Loading/> : undefined}
+            {(loading) ? <Loading/> : null}
         </>
     );
 };

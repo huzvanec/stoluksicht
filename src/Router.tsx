@@ -1,6 +1,6 @@
 import {Route, Routes, useLocation} from 'react-router-dom';
 import {Home} from './routes/home/Home';
-import React, {HTMLAttributes, useEffect} from 'react';
+import React, {HTMLAttributes} from 'react';
 import {AnimatePresence, motion, MotionProps, Variants} from 'framer-motion';
 import {LogIn} from './routes/log-in/LogIn';
 import {Register} from './routes/register/Register';
@@ -9,6 +9,7 @@ import {Menu} from './routes/menu/Menu';
 import Meal, {M} from './routes/meal/Meal';
 import NotFound from './routes/404/NotFound';
 import RequireAuth from './component/RequireAuth';
+import AutoScroll from './component/AutoScroll.tsx';
 
 // animation
 export const variants: Variants = {
@@ -49,33 +50,32 @@ export const a = (child: React.JSX.Element, state?: any): React.JSX.Element => {
 
 export const AnimatedRoutes = () => {
     const location = useLocation();
-
-    useEffect(() => {
-        const behavior: ScrollBehavior = location.pathname.startsWith('/meal') ? 'auto' : 'smooth';
-        window.scroll({top: 0, behavior: behavior});
-    }, [location]);
+    history.scrollRestoration = 'manual';
 
     return (
         <AnimatePresence mode={'wait'}>
-            <Routes location={location} key={location.key}>
-                <Route index element={a(<Home/>)}/>
-                <Route path={'/log-in'} element={a(<LogIn/>)}/>
-                <Route path={'/register'} element={a(<Register/>)}/>
-                <Route path={'/verify/*'}>
-                    <Route index element={<NotFound/>}/>
-                    <Route path={':code'} element={<Verify/>}/>
-                </Route>
-                <Route path={'/meal/*'}>
-                    <Route index element={<NotFound/>}/>
-                    <Route path={':uuid'} element={<RequireAuth>{a(<Meal/>)}</RequireAuth>}/>
-                </Route>
-                <Route path={'/m/*'}>
-                    <Route index element={<NotFound/>}/>
-                    <Route path={':uuid'} element={<M/>}/>
-                </Route>
-                <Route path={'/menu'} element={<RequireAuth>{a(<Menu/>)}</RequireAuth>}/>
-                <Route path={'/*'} element={<NotFound/>}/>
-            </Routes>
+            <>
+                <AutoScroll/>
+                <Routes location={location} key={location.key}>
+                    <Route index element={a(<Home/>)}/>
+                    <Route path={'/log-in'} element={a(<LogIn/>)}/>
+                    <Route path={'/register'} element={a(<Register/>)}/>
+                    <Route path={'/verify/*'}>
+                        <Route index element={<NotFound/>}/>
+                        <Route path={':code'} element={<Verify/>}/>
+                    </Route>
+                    <Route path={'/meal/*'}>
+                        <Route index element={<NotFound/>}/>
+                        <Route path={':uuid'} element={<RequireAuth>{a(<Meal/>)}</RequireAuth>}/>
+                    </Route>
+                    <Route path={'/m/*'}>
+                        <Route index element={<NotFound/>}/>
+                        <Route path={':uuid'} element={<M/>}/>
+                    </Route>
+                    <Route path={'/menu'} element={<RequireAuth>{a(<Menu/>)}</RequireAuth>}/>
+                    <Route path={'/*'} element={<NotFound/>}/>
+                </Routes>
+            </>
         </AnimatePresence>
     );
 };

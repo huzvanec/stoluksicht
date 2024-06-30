@@ -123,7 +123,7 @@ const Meal: React.FC<MealProps> = ({
                                        globalRating
                                    }) => {
     const [t] = useTranslation();
-    const type = courseNumber ?? t(course);
+    const type = t(course) + (courseNumber ? ' ' + courseNumber : '');
     const navigate = useNavigate();
 
     const handleOpen = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {

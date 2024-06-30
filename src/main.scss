@@ -82,3 +82,11 @@ body {
 .MuiSvgIcon-root {
   transition: .3s;
 }
+
+.MuiRating-iconEmpty {
+  color: var(--mui-palette-text-primary);
+}
+
+.MuiRating-iconActive, .MuiRating-iconHover, .MuiRating-iconFilled {
+  color: var(--mui-palette-secondary-A400);
+}

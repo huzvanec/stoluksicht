@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Navigate, useParams} from 'react-router-dom';
-import {Box, Rating, Skeleton, Typography} from '@mui/material';
+import {Box, Rating, Skeleton, Typography, useColorScheme} from '@mui/material';
 import useApi, {AnyData, ErrorResponse, SuccessResponse} from '../../provider/ApiProvider';
 import './meal.scss';
 import {useTranslation} from 'react-i18next';
@@ -29,8 +29,7 @@ const Meal = () => {
     const [notFound, setNotFound] = useState<boolean>(false);
     const [mealData, setMealData] = useState<MealData | undefined>();
     const [t] = useTranslation();
-    const {snack} = useStolu();
-
+    const {colorScheme} = useColorScheme();
 
     const loadMeal = async () => {
         const response = await apiCall(api => api.get('/meal/' + uuid));
@@ -49,13 +48,6 @@ const Meal = () => {
         });
     };
 
-    const copyShortLink = () => {
-        const shortUuid: string = uuid!.replace(/-/g, '');
-        const shortLink: string = `${window.location.host}/m/${shortUuid}`;
-        navigator.clipboard.writeText(shortLink);
-        snack(t('linkCopied'), 'success');
-    };
-
     useEffect(() => {
         loadMeal();
     }, []);
@@ -66,7 +58,7 @@ const Meal = () => {
             return (
                 <Typography typography={'body1'} sx={{
                     fontStyle: 'italic',
-                    color: grey[400]
+                    color: grey[colorScheme == 'light' ? 700 : 400]
                 }}>
                     {t('noDescription')}
                 </Typography>
@@ -90,11 +82,7 @@ const Meal = () => {
                             {mealData ? t(mealData.course.toLowerCase()) : <Skeleton/>}
                         </Typography>
                         <Box className={'toolbar'}>
-                            <StoluTooltip title={t('copyMealLink')}>
-                                <StoluIconButton icon={'fa-solid fa-link'}
-                                                 className={'action'}
-                                                 onClick={copyShortLink}/>
-                            </StoluTooltip>
+                            <MealShortLink uuid={uuid!}/>
                         </Box>
                     </Box>
                     <Typography typography={'h4'} className={'name'}>
@@ -125,5 +113,30 @@ export const M: React.FC = () => {
     };
     return (
         <Navigate to={'/meal/' + dashUuid(uuid)}/>
+    );
+};
+
+
+export interface MealShortLinkProps {
+    uuid: string;
+}
+
+export const MealShortLink: React.FC<MealShortLinkProps> = ({uuid}) => {
+    const [t] = useTranslation();
+    const {snack} = useStolu();
+
+    const copyShortLink = () => {
+        const shortUuid: string = uuid!.replace(/-/g, '');
+        const shortLink: string = `${window.location.host}/m/${shortUuid}`;
+        navigator.clipboard.writeText(shortLink);
+        snack(t('linkCopied'), 'success');
+    };
+
+    return (
+        <StoluTooltip title={t('copyMealLink')}>
+            <StoluIconButton icon={'fa-solid fa-link'}
+                             className={'action'}
+                             onClick={copyShortLink}/>
+        </StoluTooltip>
     );
 };

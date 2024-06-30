@@ -30,7 +30,6 @@
         cursor: pointer;
 
         .type {
-          width: 80px;
           display: inline-block;
         }
 
@@ -66,7 +65,7 @@
 
               .rating-star {
                 font-size: .8em;
-                color: var(--mui-palette-secondary-main);
+                color: var(--mui-palette-secondary-A400);
               }
             }
           }
