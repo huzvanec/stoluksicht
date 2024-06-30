@@ -79,7 +79,8 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({anchor, close, ...other}) => {
               open={isOpen}
               anchorEl={anchor}
               className={'profile-menu'}
-              onClose={close}>
+              onClose={close}
+              disableScrollLock>
             <MenuItem onClick={logOut}>
                 <i className={'fa-solid fa-right-from-bracket'}/>
                 {t('logOut')}
@@ -165,6 +166,7 @@ const MobileDrawer: React.FC = () => {
                       anchorEl={menuAnchor}
                       className={'profile-menu'}
                       onClose={closeMenu}
+                      disableScrollLock
                       {...popoverTop}>
                     <MenuItem component={NavLink} to={'/log-in'} onClick={close}>
                         {t('logIn')}
@@ -274,6 +276,7 @@ const LanguageSelector: React.FC<SelectProps> = (_onChange, {className, ...other
         <Select value={currentLanguage()}
                 size={'small'}
                 className={'language-selector ' + className}
+                MenuProps={{disableScrollLock: true}}
                 onChange={changeLanguage}
                 {...other}>
             <MenuItem value={'en'}>🇬🇧 EN</MenuItem>
