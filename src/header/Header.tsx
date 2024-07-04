@@ -66,7 +66,7 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({anchor, close, ...other}) => {
     const logOut = async () => {
         close();
         setLoading(true);
-        const response = await apiCall(api => api.post('/log-out'));
+        const response = await apiCall(api => api.post('/auth/log-out'));
         setLoading(false);
         if (response.state !== 'success') return;
         setToken(null);

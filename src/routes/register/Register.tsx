@@ -19,7 +19,7 @@ export const Register = () => {
 
     const verifySend = async (data: FieldValues = formData as FieldValues): Promise<boolean> => {
         setLoading(true);
-        const response = await apiCall(api => api.post('/register', {
+        const response = await apiCall(api => api.post('/auth/register', {
             name: data.username,
             // TODO
             // email: data.email + data.emailSuffix,

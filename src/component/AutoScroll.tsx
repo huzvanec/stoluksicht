@@ -29,7 +29,6 @@ const AutoScroll: React.FC = (): null => {
 
             // scroll handler
             const onScroll = () => {
-                console.log('scroll');
                 sessionStorage.setItem(key, window.scrollY.toString());
             };
             window.addEventListener('scroll', onScroll);

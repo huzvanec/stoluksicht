@@ -98,7 +98,7 @@ export const ApiProvider: React.FC<ApiProviderProps> = ({children}) => {
         }
         localStorage.setItem(tokenStorageKey, token);
         setAxiosToken();
-        const response = await apiCall(api => api.get('/test-auth'));
+        const response = await apiCall(api => api.get('/auth/session'));
         if (response.state === 'error') {
             console.debug('Token invalid, removing...');
             setToken(null); // 1-deep recursion (calls useLayoutEffect)

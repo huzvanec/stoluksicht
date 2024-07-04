@@ -11,16 +11,15 @@ import {Renderer} from '../../main.tsx';
 import {grey} from '@mui/material/colors';
 import useStolu from '../../provider/StoluProvider.tsx';
 
-type Description = string | null;
-
-interface MealData {
+export interface MealData {
     canteen: string,
     course: string,
-    description: Description,
-    mealNames: string[],
-    photoUuids: string[]
+    description: string | null,
+    name: string,
+    photoUuids: string[],
+    userRating: number,
+    globalRating: number
 }
-
 
 const Meal = () => {
     const {apiCall} = useApi();
@@ -31,8 +30,8 @@ const Meal = () => {
     const [t] = useTranslation();
     const {colorScheme} = useColorScheme();
 
-    const loadMeal = async () => {
-        const response = await apiCall(api => api.get('/meal/' + uuid));
+    const getMeal = async () => {
+        const response = await apiCall(api => api.get('/meals/' + uuid));
         if (response.state === 'error') {
             const errorType: string = (response.response as ErrorResponse).error.type;
             if (errorType === 'MEAL_UUID_INVALID') setNotFound(true);
@@ -43,13 +42,15 @@ const Meal = () => {
             canteen: data.meal.canteen,
             course: data.meal.course,
             description: data.meal.description,
-            mealNames: data.names,
-            photoUuids: data.photos
+            name: data.names[0],
+            photoUuids: data.photos,
+            userRating: data.ratings.user,
+            globalRating: data.ratings.global
         });
     };
 
     useEffect(() => {
-        loadMeal();
+        getMeal();
     }, []);
 
     const mealDescription: Renderer = () => {
@@ -75,7 +76,7 @@ const Meal = () => {
     } else {
         return (
             <>
-                <Helmet title={mealData ? mealData.mealNames[0] : 'Loading...'}/>
+                <Helmet title={mealData ? mealData.name : 'Loading...'}/>
                 <Box className={'meal-profile menu'}>
                     <Box className={'top'}>
                         <Typography typography={'h6'}>
@@ -86,7 +87,7 @@ const Meal = () => {
                         </Box>
                     </Box>
                     <Typography typography={'h4'} className={'name'}>
-                        {mealData ? mealData.mealNames[0] : <Skeleton/>}
+                        {mealData ? mealData.name : <Skeleton/>}
                     </Typography>
                     <Typography typography={'overline'}>{t('description')}</Typography>
                     {mealDescription()}

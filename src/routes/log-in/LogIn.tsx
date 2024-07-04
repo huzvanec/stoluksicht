@@ -23,7 +23,7 @@ export const LogIn: React.FC = () => {
 
     const logIn = async (data: FieldValues): Promise<boolean> => {
         setLoading(true);
-        const response = await apiCall(api => api.post('/log-in', {
+        const response = await apiCall(api => api.post('/auth/log-in', {
             // TODO
             // email: data.email + data.emailSuffix,
             email: data.email + '@email.cz',

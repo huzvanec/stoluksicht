@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Rating, Typography} from '@mui/material';
 import {useTranslation} from 'react-i18next';
 import './menu.scss';
@@ -6,11 +6,45 @@ import useStolu from '../../provider/StoluProvider';
 import {StoluTooltip} from '../../header/Header';
 import {useNavigate} from 'react-router-dom';
 import {grey} from '@mui/material/colors';
+import useApi, {AnyData, SuccessResponse} from '../../provider/ApiProvider.tsx';
+import {MealData} from '../meal/Meal.tsx';
 
 const weekdayFormatter = new Intl.DateTimeFormat('en-US', {weekday: 'long'});
 
+interface MenuMealData extends MealData {
+    mealUuid: string,
+    menuUuid: string,
+    courseNumber: number | null
+}
+
 export const Menu: React.FC = () => {
     const {mobile} = useStolu();
+    const {apiCall} = useApi();
+    const [menuData, setMenuData] = useState<Map<Date, MenuMealData[]>>(new Map);
+
+    const getMenu = async () => {
+        const response = await apiCall(api => api.get('/menu'));
+        if (response.state !== 'success') return;
+        const menu: { [key: string]: AnyData[] } = (response.response as SuccessResponse).content.menu;
+
+        for (const [dateStr, menuEntries] of Object.entries(menu)) {
+            const date: Date = new Date(dateStr);
+            for (const menuEntry of menuEntries) {
+                const mealData: MenuMealData = {
+                    name: menuEntry.name,
+                    courseNumber: menuEntry.courseNumber,
+                    menuUuid: menuEntry.uuid,
+                    mealUuid: menuEntry.meal.uuid,
+                    course: menuEntry.meal.course,
+                };
+            }
+        }
+    };
+
+    useEffect(() => {
+        getMenu();
+    });
+
     return (
         <Box className={'menu-container'}>
             <Box className={'menu-meals'}

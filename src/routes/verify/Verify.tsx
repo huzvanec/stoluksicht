@@ -15,7 +15,7 @@ export const Verify: React.FC = () => {
 
     const verify = async (code: string) => {
         setLoading(true);
-        const response = await apiCall(api => api.post('/verify',
+        const response = await apiCall(api => api.post('/auth/verify',
             {
                 code: code
             }));
