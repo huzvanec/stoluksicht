@@ -88,7 +88,7 @@ const MenuDay: React.FC<MenuDayProps> = ({date, data}) => {
 
     const formatDate = (date: Date): string => {
         return t('dateFormat', {
-            day: date.getDay(),
+            day: date.getDate(),
             month: date.getMonth() + 1, // counted from zero
             year: date.getFullYear()
         });
@@ -126,7 +126,7 @@ const MealRating: React.FC<MealRatingProps> = ({icon, rating, className, tooltip
                       enterTouchDelay={0}>
             <span className={'rating ' + (className ?? '')}>
                 <i className={'rating-icon ' + icon}/>
-                {rating ?? <Typography sx={{color: grey[400]}}>???</Typography>}
+                {rating?.toFixed(1) ?? <Typography sx={{color: grey[400]}}>–</Typography>}
                 <i className={'rating-star fa-solid fa-star'}/>
             </span>
         </StoluTooltip>
@@ -135,7 +135,7 @@ const MealRating: React.FC<MealRatingProps> = ({icon, rating, className, tooltip
 
 const Meal: React.FC<MealProps> = ({data}) => {
     const [t] = useTranslation();
-    const type = t(data.course) + (data.courseNumber ? ' ' + data.courseNumber : '');
+    const type = t(data.course.toLowerCase()) + (data.courseNumber ? ' ' + data.courseNumber : '');
     const navigate = useNavigate();
 
     const handleOpen = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
