@@ -118,6 +118,7 @@ const DesktopBar: React.FC = () => {
                 <ModeChanger/>
                 <LanguageSelector/>
                 {renderProfile()}
+                <InstallButton/>
             </Toolbar>
         </AppBar>
     );
@@ -223,6 +224,7 @@ const MobileDrawer: React.FC = () => {
                     <Navigation orientation={'vertical'}/>
                     <Box className={'right'}>
                         {renderRight()}
+                        <InstallButton/>
                     </Box>
                 </Box>
                 <Box className={'utils'}>
@@ -395,5 +397,27 @@ export const StoluTooltip: React.FC<TooltipProps> = ({children, ...other}) => {
                 {children}
             </div>
         </Tooltip>
+    );
+};
+
+const InstallButton: React.FC<ButtonProps> = ({className, ...other}) => {
+    const [t] = useTranslation();
+    const {installPrompt} = useStolu();
+    if (!installPrompt) return null;
+
+    installPrompt.userChoice.then(value => {
+        if (value.outcome === 'accepted') window.location.reload();
+    });
+    return (
+        <>
+            <Button variant={'contained'}
+                    className={'header-button install-button ' + className}
+                    color={"info"}
+                    onClick={() => installPrompt.prompt()}
+                    {...other}>
+                <i className={'fa-solid fa-arrow-down-to-bracket'}/>
+                {t('install')}
+            </Button>
+        </>
     );
 };

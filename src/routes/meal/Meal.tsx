@@ -11,14 +11,19 @@ import {Renderer} from '../../main.tsx';
 import {grey} from '@mui/material/colors';
 import useStolu from '../../provider/StoluProvider.tsx';
 
+export type Course = 'soup' | 'main' | 'addition';
+
 export interface MealData {
-    canteen: string,
-    course: string,
+    course: Course,
     description: string | null,
     name: string,
-    photoUuids: string[],
     userRating: number,
     globalRating: number
+}
+
+interface MealProfileData extends MealData {
+    canteen: string,
+    photoUuids: string[]
 }
 
 const Meal = () => {
@@ -26,7 +31,7 @@ const Meal = () => {
 
     const {uuid} = useParams<{ uuid: string }>();
     const [notFound, setNotFound] = useState<boolean>(false);
-    const [mealData, setMealData] = useState<MealData | undefined>();
+    const [mealData, setMealData] = useState<MealProfileData | undefined>();
     const [t] = useTranslation();
     const {colorScheme} = useColorScheme();
 

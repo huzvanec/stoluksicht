@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {ReactNode, useEffect, useState} from 'react';
 import {Box, Rating, Typography} from '@mui/material';
 import {useTranslation} from 'react-i18next';
 import './menu.scss';
@@ -8,42 +8,62 @@ import {useNavigate} from 'react-router-dom';
 import {grey} from '@mui/material/colors';
 import useApi, {AnyData, SuccessResponse} from '../../provider/ApiProvider.tsx';
 import {MealData} from '../meal/Meal.tsx';
+import {Renderer} from '../../main.tsx';
 
-const weekdayFormatter = new Intl.DateTimeFormat('en-US', {weekday: 'long'});
+const weekDayFormatter = new Intl.DateTimeFormat('en-US', {weekday: 'long'});
 
 interface MenuMealData extends MealData {
     mealUuid: string,
     menuUuid: string,
-    courseNumber: number | null
+    courseNumber: number | null,
 }
+
+type MenuDayData = MenuMealData[];
+type MenuData = Map<Date, MenuDayData>;
 
 export const Menu: React.FC = () => {
     const {mobile} = useStolu();
     const {apiCall} = useApi();
-    const [menuData, setMenuData] = useState<Map<Date, MenuMealData[]>>(new Map);
+    const [menuData, setMenuData] = useState<MenuData>();
 
     const getMenu = async () => {
         const response = await apiCall(api => api.get('/menu'));
         if (response.state !== 'success') return;
         const menu: { [key: string]: AnyData[] } = (response.response as SuccessResponse).content.menu;
-
-        for (const [dateStr, menuEntries] of Object.entries(menu)) {
+        const menuDataTemp: MenuData = new Map;
+        for (const [dateStr, dayEntries] of Object.entries(menu)) {
             const date: Date = new Date(dateStr);
-            for (const menuEntry of menuEntries) {
+            const dayData: MenuDayData = [];
+            for (const dayEntry of dayEntries) {
                 const mealData: MenuMealData = {
-                    name: menuEntry.name,
-                    courseNumber: menuEntry.courseNumber,
-                    menuUuid: menuEntry.uuid,
-                    mealUuid: menuEntry.meal.uuid,
-                    course: menuEntry.meal.course,
+                    name: dayEntry.name,
+                    courseNumber: dayEntry.courseNumber,
+                    menuUuid: dayEntry.uuid,
+                    mealUuid: dayEntry.meal.uuid,
+                    course: dayEntry.meal.course,
+                    description: dayEntry.meal.description,
+                    userRating: dayEntry.meal.ratings.user,
+                    globalRating: dayEntry.meal.ratings.global
                 };
+                dayData.push(mealData);
             }
+            menuDataTemp.set(date, dayData);
         }
+        setMenuData(menuDataTemp);
     };
 
     useEffect(() => {
         getMenu();
-    });
+    }, []);
+
+    const renderMenu: Renderer = () => {
+        if (!menuData) return null;
+        const days: ReactNode[] = [];
+        for (const [date, dayData] of menuData.entries()) {
+            days.push(<MenuDay key={date.toString()} date={date} data={dayData}/>);
+        }
+        return days;
+    };
 
     return (
         <Box className={'menu-container'}>
@@ -51,8 +71,7 @@ export const Menu: React.FC = () => {
                  sx={{
                      marginTop: (mobile ? 5 : 3) + 'svh'
                  }}>
-                <MenuDay date={new Date('2024-05-07')}/>
-                <MenuDay date={new Date('2024-05-13')}/>
+                {renderMenu()}
             </Box>
         </Box>
     );
@@ -60,10 +79,11 @@ export const Menu: React.FC = () => {
 
 interface MenuDayProps {
     date: Date;
+    data: MenuDayData;
 }
 
 
-const MenuDay: React.FC<MenuDayProps> = ({date}) => {
+const MenuDay: React.FC<MenuDayProps> = ({date, data}) => {
     const [t] = useTranslation();
 
     const formatDate = (date: Date): string => {
@@ -78,53 +98,18 @@ const MenuDay: React.FC<MenuDayProps> = ({date}) => {
         <Box className={'menu-day menu'}>
             <Typography className={'title'}
                         variant={'h4'}>
-                {t(weekdayFormatter.format(date).toLowerCase())}
+                {t(weekDayFormatter.format(date).toLowerCase())}
                 {' '}
                 {formatDate(date)}
             </Typography>
-            <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
-                  course={'soup'}
-                  courseNumber={null}
-                  name={'Krémová s vločkami na želé'}
-                  globalRating={null}
-                  userRating={null}/>
-            <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
-                  course={'main'}
-                  courseNumber={1}
-                  name={'Řízel'}
-                  globalRating={null}
-                  userRating={null}/>
-            <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
-                  course={'main'}
-                  courseNumber={2}
-                  name={'Řízel'}
-                  globalRating={null}
-                  userRating={null}/>
-            <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
-                  course={'main'}
-                  courseNumber={3}
-                  name={'Řízel'}
-                  globalRating={null}
-                  userRating={null}/>
-            <Meal uuid={'5031a2b4-522f-4ce3-8b3d-4385c6ed2ea9'}
-                  course={'addition'}
-                  courseNumber={null}
-                  name={'Yum'}
-                  globalRating={null}
-                  userRating={null}/>
+            {data.map(mealData => <Meal key={mealData.menuUuid} data={mealData}/>)}
         </Box>
     );
 };
 
-type Course = 'soup' | 'main' | 'addition';
 
 interface MealProps {
-    uuid: string,
-    course: Course;
-    courseNumber: number | null;
-    name: string;
-    userRating: number | null;
-    globalRating: number | null;
+    data: MenuMealData;
 }
 
 interface MealRatingProps {
@@ -148,21 +133,14 @@ const MealRating: React.FC<MealRatingProps> = ({icon, rating, className, tooltip
     );
 };
 
-const Meal: React.FC<MealProps> = ({
-                                       uuid,
-                                       course,
-                                       courseNumber,
-                                       name,
-                                       userRating,
-                                       globalRating
-                                   }) => {
+const Meal: React.FC<MealProps> = ({data}) => {
     const [t] = useTranslation();
-    const type = t(course) + (courseNumber ? ' ' + courseNumber : '');
+    const type = t(data.course) + (data.courseNumber ? ' ' + data.courseNumber : '');
     const navigate = useNavigate();
 
     const handleOpen = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
         if (!(event.target as HTMLElement).classList.contains('meal-opener')) return;
-        navigate('/meal/' + uuid);
+        navigate('/meal/' + data.mealUuid);
     };
 
     return (
@@ -172,14 +150,14 @@ const Meal: React.FC<MealProps> = ({
                 {type}
             </Typography>
             <Typography className={'name meal-opener'}>
-                {name}
+                {data.name}
             </Typography>
             <Box className={'rating-box meal-opener'}>
                 {/*<Rating icon={<i className={'fa-solid fa-utensils'}/>}/>*/}
                 <Rating/>
                 <Box className={'ratings'}>
-                    <MealRating rating={userRating} icon={'fa-solid fa-user'} tooltip={t('personalRating')}/>
-                    <MealRating rating={globalRating} icon={'fa-solid fa-users'} tooltip={t('globalRating')}/>
+                    <MealRating rating={data.userRating} icon={'fa-solid fa-user'} tooltip={t('personalRating')}/>
+                    <MealRating rating={data.globalRating} icon={'fa-solid fa-users'} tooltip={t('globalRating')}/>
                 </Box>
             </Box>
         </Box>

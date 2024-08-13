@@ -44,5 +44,6 @@
     "tsx": "^4.15.7",
     "typescript": "^5.2.2",
     "vite": "^5.3.1"
-  }
+  },
+  "packageManager": "yarn@4.4.0"
 }

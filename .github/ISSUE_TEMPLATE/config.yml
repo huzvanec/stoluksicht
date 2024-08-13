@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Bug report
-    url: https://github.com/Mandlemankiller/StolujemeAPI/issues/new?assignees=Mandlemankiller&labels=type%3A+bug&projects=&template=bug-report.yml
+    url: https://github.com/Mandlemankiller/StolujemeAPI/issues/new?assignees=huzvanec&labels=type%3A+bug&projects=&template=bug-report.yml
     about: Report a problem with Stolujeme.
   - name: Feature request
-    url: https://github.com/Mandlemankiller/StolujemeAPI/issues/new?assignees=Mandlemankiller&labels=type%3A+feature&projects=&template=feature-request.yml
+    url: https://github.com/Mandlemankiller/StolujemeAPI/issues/new?assignees=huzvanec&labels=type%3A+feature&projects=&template=feature-request.yml
     about: Suggest an idea for Stolujeme.
