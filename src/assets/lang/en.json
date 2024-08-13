@@ -63,6 +63,7 @@
   "sunday": "Sunday",
   "float": ".",
   "dateFormat": "{{day}}/{{month}}/{{year}}",
+  "menuOld": "This meal is too old to change the rating",
   "_FOOTER": null,
   "openSource": "Stolujeme is <0/>",
   "licence": "Licenced under <0/>",
@@ -76,5 +77,7 @@
   "main": "Main meal",
   "noDescription": "Unfortunately, we do not have a description for this meal.",
   "copyMealLink": "Copy link to meal",
-  "linkCopied": "Link copied to clipboard!"
+  "linkCopied": "Link copied to clipboard!",
+  "backToMenu": "Back to Menu",
+  "noPhotos": "Unfortunately, we do not have photos for this meal."
 }

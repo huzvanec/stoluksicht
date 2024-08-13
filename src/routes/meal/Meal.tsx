@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {Navigate, useParams} from 'react-router-dom';
-import {Box, Rating, Skeleton, Typography, useColorScheme} from '@mui/material';
+import React, {ReactNode, useEffect, useState} from 'react';
+import {Navigate, NavLink, useParams} from 'react-router-dom';
+import {Box, Button, Rating, Skeleton, Typography, useColorScheme} from '@mui/material';
 import useApi, {AnyData, ErrorResponse, SuccessResponse} from '../../provider/ApiProvider';
 import './meal.scss';
 import {useTranslation} from 'react-i18next';
@@ -10,6 +10,7 @@ import NotFound from '../404/NotFound';
 import {Renderer} from '../../main.tsx';
 import {grey} from '@mui/material/colors';
 import useStolu from '../../provider/StoluProvider.tsx';
+import Carousel from 'react-material-ui-carousel';
 
 export type Course = 'soup' | 'main' | 'addition';
 
@@ -27,11 +28,12 @@ interface MealProfileData extends MealData {
 }
 
 const Meal = () => {
-    const {apiCall} = useApi();
-
+    const {apiCall, api} = useApi();
+    const {mobile} = useStolu();
     const {uuid} = useParams<{ uuid: string }>();
     const [notFound, setNotFound] = useState<boolean>(false);
     const [mealData, setMealData] = useState<MealProfileData | undefined>();
+    const [mealPhotoUrls, setMealPhotoUrls] = useState<string[] | undefined>();
     const [t] = useTranslation();
     const {colorScheme} = useColorScheme();
 
@@ -47,16 +49,41 @@ const Meal = () => {
             canteen: data.meal.canteen,
             course: data.meal.course,
             description: data.meal.description,
-            name: data.names[0],
-            photoUuids: data.photos,
-            userRating: data.ratings.user,
-            globalRating: data.ratings.global
+            name: data.meal.names[0],
+            photoUuids: data.meal.photos,
+            userRating: data.meal.ratings.user,
+            globalRating: data.meal.ratings.global
         });
+    };
+
+    const getPhotos = async () => {
+        if (!mealData) return;
+        try {
+            const urlsTemp: string[] = [];
+            for (const photoUuid of mealData.photoUuids) {
+                const response = await api.get(`/meals/${uuid}/photos/${photoUuid}/view`, {
+                    responseType: 'blob',
+                });
+                const url = URL.createObjectURL(response.data);
+                urlsTemp.push(url);
+            }
+            setMealPhotoUrls(urlsTemp);
+        } catch (e_) {
+            console.debug(e_);
+        }
     };
 
     useEffect(() => {
         getMeal();
+
+        return () => {
+            mealPhotoUrls?.forEach(url => URL.revokeObjectURL(url));
+        };
     }, []);
+
+    useEffect(() => {
+        getPhotos();
+    }, [mealData]);
 
     const mealDescription: Renderer = () => {
         if (!mealData) return <Typography typography={'body1'}><Skeleton/></Typography>;
@@ -76,6 +103,26 @@ const Meal = () => {
         );
     };
 
+    const carousel: Renderer = () => {
+        if (mealPhotoUrls?.length == 0)
+            return <Typography typography={'body1'} sx={{
+                fontStyle: 'italic',
+                color: grey[colorScheme == 'light' ? 700 : 400]
+            }}>
+                {t('noPhotos')}
+            </Typography>;
+        const content: ReactNode = !mealData || !mealPhotoUrls ?
+            <Skeleton height={300} style={{width: '100%'}}/> :
+            mealPhotoUrls.map((url, index) => <img key={index} src={url} alt=""/>);
+        return (
+            <Carousel className={'carousel'}
+                      navButtonsAlwaysVisible
+                      autoPlay={false}>
+                {content}
+            </Carousel>
+        );
+    };
+
     if (notFound) {
         return (<NotFound/>);
     } else {
@@ -84,21 +131,49 @@ const Meal = () => {
                 <Helmet title={mealData ? mealData.name : 'Loading...'}/>
                 <Box className={'meal-profile menu'}>
                     <Box className={'top'}>
-                        <Typography typography={'h6'}>
-                            {mealData ? t(mealData.course.toLowerCase()) : <Skeleton/>}
-                        </Typography>
+                        <Button className={'back'}
+                                component={NavLink}
+                                to={'/menu'}
+                                variant={'outlined'}>
+                            <i className={'fa-solid fa-backward'}/>
+                            {t('backToMenu')}
+                        </Button>
                         <Box className={'toolbar'}>
                             <MealShortLink uuid={uuid!}/>
                         </Box>
                     </Box>
-                    <Typography typography={'h4'} className={'name'}>
-                        {mealData ? mealData.name : <Skeleton/>}
-                    </Typography>
-                    <Typography typography={'overline'}>{t('description')}</Typography>
-                    {mealDescription()}
-                    <Typography typography={'overline'}>{t('rating')}</Typography>
-                    <Box>
-                        <Rating readOnly value={2}/>
+                    <Box className={'bottom'}>
+                        <Box className={'info'} style={{
+                            maxWidth: mobile ? '100%' : '50%'
+                        }}>
+                            <Typography typography={'h6'}>
+                                {mealData ? t(mealData.course.toLowerCase()) : <Skeleton/>}
+                            </Typography>
+                            <Typography typography={'h4'} className={'name'}>
+                                {mealData ? mealData.name : <Skeleton/>}
+                            </Typography>
+                            <Typography typography={'overline'}>{t('description')}</Typography>
+                            {mealDescription()}
+                            <Typography typography={'overline'}>{t('rating')}</Typography>
+                            {
+                                (mealData) ?
+                                    <Box className={'ratings'}>
+                                        {t('personalRating') + ':'}
+                                        <Rating readOnly value={mealData.userRating} precision={.1}/>
+                                        <p>({mealData.userRating ? mealData.userRating.toFixed(1) : '—'})</p>
+                                        {t('globalRating') + ':'}
+                                        <Rating readOnly value={mealData.globalRating} precision={.1}/>
+                                        <p>({mealData.globalRating ? mealData.globalRating.toFixed(1) : '—'})</p>
+                                    </Box> :
+                                    null
+                            }
+                        </Box>
+                        <Box className={'photos'} style={{
+                            width: mobile ? '100%' : '40%'
+                        }}>
+                            <Typography typography={'overline'}>{t('photos')}</Typography>
+                            {carousel()}
+                        </Box>
                     </Box>
                 </Box>
             </>

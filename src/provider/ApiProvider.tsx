@@ -53,6 +53,7 @@ interface ApiContextType {
     token: string | null;
     setToken: Dispatch<SetStateAction<string | null>>;
     authenticated: boolean;
+    api: AxiosInstance;
 }
 
 export const ApiContext = createContext<ApiContextType>(null!);
@@ -154,7 +155,8 @@ export const ApiProvider: React.FC<ApiProviderProps> = ({children}) => {
         apiCall,
         token,
         setToken,
-        authenticated: !!token
+        authenticated: !!token,
+        api
     };
 
     return (

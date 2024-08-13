@@ -9,6 +9,7 @@ import {grey} from '@mui/material/colors';
 import useApi, {AnyData, SuccessResponse} from '../../provider/ApiProvider.tsx';
 import {MealData} from '../meal/Meal.tsx';
 import {Renderer} from '../../main.tsx';
+import {Helmet} from 'react-helmet';
 
 const weekDayFormatter = new Intl.DateTimeFormat('en-US', {weekday: 'long'});
 
@@ -16,6 +17,7 @@ interface MenuMealData extends MealData {
     mealUuid: string,
     menuUuid: string,
     courseNumber: number | null,
+    currentRating: number | null
 }
 
 type MenuDayData = MenuMealData[];
@@ -25,6 +27,7 @@ export const Menu: React.FC = () => {
     const {mobile} = useStolu();
     const {apiCall} = useApi();
     const [menuData, setMenuData] = useState<MenuData>();
+    const [t] = useTranslation();
 
     const getMenu = async () => {
         const response = await apiCall(api => api.get('/menu'));
@@ -43,7 +46,8 @@ export const Menu: React.FC = () => {
                     course: dayEntry.meal.course,
                     description: dayEntry.meal.description,
                     userRating: dayEntry.meal.ratings.user,
-                    globalRating: dayEntry.meal.ratings.global
+                    globalRating: dayEntry.meal.ratings.global,
+                    currentRating: dayEntry.currentRating
                 };
                 dayData.push(mealData);
             }
@@ -60,31 +64,42 @@ export const Menu: React.FC = () => {
         if (!menuData) return null;
         const days: ReactNode[] = [];
         for (const [date, dayData] of menuData.entries()) {
-            days.push(<MenuDay key={date.toString()} date={date} data={dayData}/>);
+            days.push(<MenuDay key={date.toString()} date={date} data={dayData} reload={getMenu}/>);
         }
         return days;
     };
 
     return (
-        <Box className={'menu-container'}>
-            <Box className={'menu-meals'}
-                 sx={{
-                     marginTop: (mobile ? 5 : 3) + 'svh'
-                 }}>
-                {renderMenu()}
+        <>
+            <Helmet title={t('menu')}/>
+            <Box className={'menu-container'}>
+                <Box className={'menu-meals'}
+                     sx={{
+                         marginTop: (mobile ? 5 : 3) + 'svh'
+                     }}>
+                    {renderMenu()}
+                </Box>
             </Box>
-        </Box>
+        </>
     );
 };
 
 interface MenuDayProps {
     date: Date;
     data: MenuDayData;
+    reload: () => void;
 }
 
 
-const MenuDay: React.FC<MenuDayProps> = ({date, data}) => {
+const MenuDay: React.FC<MenuDayProps> = ({date, data, reload}) => {
     const [t] = useTranslation();
+
+    const daysBetweenDates = (date1: Date, date2: Date): number => {
+        const timeDifference = date2.getTime() - date1.getTime();
+        const millisecondsPerDay = 1000 * 60 * 60 * 24;
+        const dayDifference = timeDifference / millisecondsPerDay;
+        return Math.floor(dayDifference);
+    };
 
     const formatDate = (date: Date): string => {
         return t('dateFormat', {
@@ -94,6 +109,9 @@ const MenuDay: React.FC<MenuDayProps> = ({date, data}) => {
         });
     };
 
+
+    const ratingDisabled: boolean = daysBetweenDates(date, new Date()) > 7;
+
     return (
         <Box className={'menu-day menu'}>
             <Typography className={'title'}
@@ -102,15 +120,14 @@ const MenuDay: React.FC<MenuDayProps> = ({date, data}) => {
                 {' '}
                 {formatDate(date)}
             </Typography>
-            {data.map(mealData => <Meal key={mealData.menuUuid} data={mealData}/>)}
+            {data.map(mealData => <Meal key={mealData.menuUuid}
+                                        data={mealData}
+                                        reload={reload}
+                                        ratingDisabled={ratingDisabled}/>)}
         </Box>
     );
 };
 
-
-interface MealProps {
-    data: MenuMealData;
-}
 
 interface MealRatingProps {
     icon: string;
@@ -126,21 +143,36 @@ const MealRating: React.FC<MealRatingProps> = ({icon, rating, className, tooltip
                       enterTouchDelay={0}>
             <span className={'rating ' + (className ?? '')}>
                 <i className={'rating-icon ' + icon}/>
-                {rating?.toFixed(1) ?? <Typography sx={{color: grey[400]}}>–</Typography>}
+                {rating?.toFixed(1) ?? <Typography sx={{color: grey[500]}}>—</Typography>}
                 <i className={'rating-star fa-solid fa-star'}/>
             </span>
         </StoluTooltip>
     );
 };
 
-const Meal: React.FC<MealProps> = ({data}) => {
+interface MealProps {
+    data: MenuMealData;
+    reload: () => void;
+    ratingDisabled: boolean;
+}
+
+const Meal: React.FC<MealProps> = ({data, reload, ratingDisabled}) => {
     const [t] = useTranslation();
     const type = t(data.course.toLowerCase()) + (data.courseNumber ? ' ' + data.courseNumber : '');
     const navigate = useNavigate();
+    const {apiCall} = useApi();
 
     const handleOpen = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
         if (!(event.target as HTMLElement).classList.contains('meal-opener')) return;
         navigate('/meal/' + data.mealUuid);
+    };
+
+    const rate = async (newRating: number | null) => {
+        if (newRating == null) return;
+        await apiCall(api => api.put(`/menu/${data.menuUuid}/rating`, {
+            rating: newRating
+        }));
+        reload();
     };
 
     return (
@@ -154,7 +186,13 @@ const Meal: React.FC<MealProps> = ({data}) => {
             </Typography>
             <Box className={'rating-box meal-opener'}>
                 {/*<Rating icon={<i className={'fa-solid fa-utensils'}/>}/>*/}
-                <Rating/>
+                <Box>
+                    <StoluTooltip title={ratingDisabled ? t('menuOld') : ''}>
+                        <Rating value={data.currentRating}
+                                disabled={ratingDisabled}
+                                onChange={(_event, value) => rate(value)}/>
+                    </StoluTooltip>
+                </Box>
                 <Box className={'ratings'}>
                     <MealRating rating={data.userRating} icon={'fa-solid fa-user'} tooltip={t('personalRating')}/>
                     <MealRating rating={data.globalRating} icon={'fa-solid fa-users'} tooltip={t('globalRating')}/>

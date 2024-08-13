@@ -63,6 +63,7 @@
   "sunday": "Neděle",
   "float": ",",
   "dateFormat": "{{day}}. {{month}}. {{year}}",
+  "menuOld": "Tohle jídlo je moc staré pro změnu hodnocení",
   "_FOOTER": null,
   "openSource": "Stolujeme je <0/>",
   "licence": "Licencováno pod <0/>",
@@ -76,5 +77,7 @@
   "main": "Hlavní jídlo",
   "noDescription": "Popis pro tohle jídlo bohužel nemáme.",
   "copyMealLink": "Zkopírovat odkaz na jídlo",
-  "linkCopied": "Odkaz zkopírován do schránky!"
+  "linkCopied": "Odkaz zkopírován do schránky!",
+  "backToMenu": "Zpět na Jídelníček",
+  "noPhotos": "Fotky pro tohle jídlo bohužel nemáme."
 }
